@@ -8,76 +8,116 @@
 :root{
 --navy:#0f2740; --blue:#1c6dd0; --blue-dark:#154f97; --amber:#f5a623; --green:#1c9c63; --red:#c0392b;
 --bg:#f7f9fc; --text:#1c2733; --muted:#5b6b7b; --white:#ffffff; --border:#e3e9f0;
---radius:14px; --shadow:0 10px 34px rgba(15,39,64,.10);
+--radius:16px; --shadow:0 10px 34px rgba(15,39,64,.10); --shadow-lg:0 18px 46px rgba(15,39,64,.14);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.5}
 a{color:inherit}
-header{background:var(--navy);color:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
-.brand{font-weight:800;font-size:17px}
+header{background:linear-gradient(135deg,var(--navy) 0%,#123258 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 18px rgba(15,39,64,.18)}
+.brand{font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);display:inline-block}
 .brand span{color:var(--amber)}
-header .right{display:flex;align-items:center;gap:16px;font-size:13.5px}
-.btn{display:inline-block;text-decoration:none;font-weight:700;padding:9px 16px;border-radius:9px;font-size:13.5px;border:none;cursor:pointer;font-family:inherit}
-.btn-primary{background:var(--blue);color:#fff}
+header .right{display:flex;align-items:center;gap:14px;font-size:13.5px}
+.who-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 12px 6px 6px;border-radius:999px}
+.who-chip .av{width:24px;height:24px;border-radius:50%;background:var(--amber);color:var(--navy);font-weight:800;font-size:10.5px;display:flex;align-items:center;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;padding:9px 16px;border-radius:9px;font-size:13.5px;border:none;cursor:pointer;font-family:inherit;transition:transform .12s,box-shadow .12s,background .15s}
+.btn-primary{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);color:#fff;box-shadow:0 6px 16px rgba(28,109,208,.28)}
+.btn-primary:hover{transform:translateY(-1px)}
 .btn-ghost-dark{background:rgba(255,255,255,.12);color:#fff}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.2)}
 .btn-small{padding:6px 11px;font-size:12px;border-radius:7px}
 .btn-amber{background:var(--amber);color:var(--navy)}
 .btn-outline{background:#fff;border:1.5px solid var(--border);color:var(--navy)}
+.btn-outline:hover{border-color:#c7d3e0}
 
-#gate{max-width:420px;margin:90px auto;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:34px;box-shadow:var(--shadow)}
+#gate{max-width:420px;margin:70px auto;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:36px;box-shadow:var(--shadow-lg);animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.gate-icon{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:0 8px 20px rgba(15,39,64,.25)}
 #gate h1{font-size:22px;color:var(--navy);margin-bottom:6px}
-#gate p{color:var(--muted);font-size:14px;margin-bottom:22px}
-#gate form{display:flex;flex-direction:column;gap:12px}
-#gate label{font-size:13px;font-weight:700;color:var(--navy)}
-#gate input{padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit}
-.msg{font-size:13.5px;padding:9px 11px;border-radius:8px;margin-top:2px}
+#gate p{color:var(--muted);font-size:14px;margin-bottom:24px}
+#gate form{display:flex;flex-direction:column;gap:13px}
+#gate label{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.02em;display:block;margin-bottom:5px}
+#gate input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:inherit;background:#fbfcfe;transition:border-color .15s,box-shadow .15s}
+#gate input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(28,109,208,.10);background:#fff}
+.msg{font-size:13.5px;padding:10px 12px;border-radius:9px;margin-top:2px}
 .msg.error{background:#fdecec;color:#a8321f}
 .msg.ok{background:#e9f8ef;color:#146c43}
 
 #dash{display:none}
-.stats{display:flex;gap:16px;padding:22px 28px 0}
-.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;box-shadow:var(--shadow)}
-.stat .n{font-size:24px;font-weight:800;color:var(--navy)}
-.stat .l{font-size:12.5px;color:var(--muted);font-weight:600}
+.stats{display:flex;gap:18px;padding:26px 28px 0;max-width:1280px;margin:0 auto}
+.stat{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 22px;flex:1;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px}
+.stat .icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.stat.users .icon{background:#eaf1fb;color:var(--blue-dark)}
+.stat.visits .icon{background:#fdf3e0;color:#a06a00}
+.stat.spend .icon{background:#e9f8ef;color:#146c43}
+.stat .n{font-size:24px;font-weight:800;color:var(--navy);line-height:1.1}
+.stat .l{font-size:12px;color:var(--muted);font-weight:600}
 
-.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;padding:20px 28px 40px;align-items:start}
+.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;padding:20px 28px 40px;align-items:start;max-width:1280px;margin:0 auto}
 .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-.panel h2{font-size:15px;color:var(--navy);padding:16px 18px;border-bottom:1px solid var(--border)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border);gap:12px}
+.panel-head h2{font-size:15px;color:var(--navy)}
+.search-box{position:relative}
+.search-box input{padding:8px 12px 8px 30px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;width:180px;background:var(--bg)}
+.search-box input:focus{outline:none;border-color:var(--blue);background:#fff}
+.search-box .icz�osition:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.6}
+
 table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{text-align:left;color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;background:var(--bg)}
+th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;background:var(--bg)}
 td{padding:11px 14px;border-top:1px solid var(--border);vertical-align:middle}
-tr.selected td{background:#eaf1fb}
+tbody tr{transition:background .12s}
+tbody tr:hover td{background:#fafbfd}
+tr.selected td{background:#eaf1fb !important}
+.row-user{display:flex;align-items:center;gap:10px}
+.row-avatar{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--navy);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.row-avatar.admin{background:linear-gradient(135deg,#f5a623,#c0392b);color:#fff}
+.row-avatar.staff{background:linear-gradient(135deg,#f5a623,#a06a00);color:#fff}
+.row-avatar.customer{background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff}
 .name{font-weight:700;color:var(--navy)}
 .sub{color:var(--muted);font-size:12px}
-.badge{font-size:10.5px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:999px;letter-spacing:.03em}
+.badge{font-size:10.5px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:999px;letter-spacing:.03em;display:inline-flex;align-items:center;gap:3px}
 .badge.customer{background:#eaf1fb;color:var(--blue-dark)}
 .badge.staff{background:#fdf3e0;color:#a06a00}
 .badge.admin{background:#fde9e9;color:var(--red)}
 .row-actions{display:flex;gap:6px;flex-wrap:wrap}
 
-#chatPanel .chat-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+#chatPanel .chat-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+#chatPanel .chat-head .row-avatar{width:30px;height:30px}
 .chat-log{height:420px;overflow-y:auto;padding:16px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
-.bubble{max-width:78%;padding:9px 13px;border-radius:12px;font-size:13.5px}
-.bubble.mine{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:3px}
-.bubble.theirs{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:3px}
+.bubble-row{display:flex;gap:8px;align-items:flex-end}
+.bubble-row.mine{flex-direction:row-reverse}
+.mini-avatar{width:24px;height:24px;border-radius:50%;background:var(--border);color:var(--navy);font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bubble-row.mine .mini-avatar{background:var(--blue);color:#fff}
+.bubble{max-width:74%;padding:9px 13px;border-radius:13px;font-size:13.5px}
+.bubble.mine{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.bubble.theirs{background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px}
 .bubble .who{font-size:10px;opacity:.75;margin-bottom:2px;font-weight:700;text-transform:uppercase}
 .chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:#fff}
-.chat-input input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13.5px;font-family:inherit}
+.chat-input input{flex:1;padding:10px 15px;border:1.5px solid var(--border);border-radius:999px;font-size:13.5px;font-family:inherit}
+.chat-input input:focus{outline:none;border-color:var(--blue)}
+.chat-input .btn{border-radius:999px;padding:10px 18px}
 .empty{color:var(--muted);font-size:13.5px;text-align:center;padding:60px 0}
+.empty .big{font-size:28px;display:block;margin-bottom:10px}
+
+@media(max-width:900px){
+  .stats{flex-direction:column}
+  .layout{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
 <header>
-<div class="brand">Desert Lead Bots <span>Admin</span></div>
+<div class="brand"><span class="dot"></span>Desert Lead Bots <span>Admin</span></div>
 <div class="right" id="headerRight" style="display:none">
-  <span id="whoAmI"></span>
+  <div class="who-chip"><span class="av" id="whoAvatar">?</span><span id="whoAmI"></span></div>
   <button class="btn btn-ghost-dark" id="signOutBtn">Sign out</button>
 </div>
 </header>
 
 <!-- Login gate -->
 <div id="gate">
+  <div class="gate-icon">🔐</div>
   <h1>Admin sign in</h1>
   <p>Sign in with your staff/admin account.</p>
   <form id="gateForm">
@@ -89,7 +129,7 @@ tr.selected td{background:#eaf1fb}
       <label>Password</label>
       <input type="password" id="gatePassword" required>
     </div>
-    <button class="btn btn-primary" type="submit">Sign In</button>
+    <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;margin-top:4px">Sign In</button>
     <div id="gateMsg"></div>
   </form>
 </div>
@@ -97,14 +137,17 @@ tr.selected td{background:#eaf1fb}
 <!-- Dashboard -->
 <div id="dash">
   <div class="stats">
-    <div class="stat"><div class="n" id="statUsers">–</div><div class="l">Registered accounts</div></div>
-    <div class="stat"><div class="n" id="statVisits">–</div><div class="l">Visits (last 200 logged)</div></div>
-    <div class="stat"><div class="n" id="statSpend">–</div><div class="l">Total spend tracked</div></div>
+    <div class="stat users"><div class="icon">👥</div><div><div class="n" id="statUsers">–</div><div class="l">Registered accounts</div></div></div>
+    <div class="stat visits"><div class="icon">📍</div><div><div class="n" id="statVisits">–</div><div class="l">Visits (last 200 logged)</div></div></div>
+    <div class="stat spend"><div class="icon">💰</div><div><div class="n" id="statSpend">–</div><div class="l">Total spend tracked</div></div></div>
   </div>
 
   <div class="layout">
     <div class="panel">
-      <h2>Accounts</h2>
+      <div class="panel-head">
+        <h2>Accounts</h2>
+        <div class="search-box"><span class="ic">🔎</span><input type="text" id="userSearch" placeholder="Search name or email…"></div>
+      </div>
       <table>
         <thead><tr><th>Name / Email</th><th>Role</th><th>Location</th><th>Spent</th><th>Last seen</th><th></th></tr></thead>
         <tbody id="userRows"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
@@ -115,7 +158,7 @@ tr.selected td{background:#eaf1fb}
       <div class="chat-head">
         <strong id="chatWithName">Select a person to chat</strong>
       </div>
-      <div class="chat-log" id="chatLog"><div class="empty">Pick someone from the list on the left.</div></div>
+      <div class="chat-log" id="chatLog"><div class="empty"><span class="big">💬</span>Pick someone from the list on the left.</div></div>
       <div class="chat-input">
         <input type="text" id="chatInput" placeholder="Type a reply…" disabled>
         <button class="btn btn-primary" id="chatSendBtn" disabled>Send</button>
@@ -132,6 +175,19 @@ let me = null;
 let allProfiles = [];
 let selectedCustomerId = null;
 let chatChannel = null;
+let searchTerm = "";
+
+function initials(str) {
+  if (!str) return "?";
+  const parts = str.trim().split(/\s+/);
+  return ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase() || str[0].toUpperCase();
+}
+
+function roleIcon(role) {
+  if (role === "admin") return "👑";
+  if (role === "staff") return "🛠";
+  return "👤";
+}
 
 document.getElementById("gateForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -141,7 +197,7 @@ document.getElementById("gateForm").addEventListener("submit", async (e) => {
   msgEl.innerHTML = "";
   const { error } = await dlbSignIn(email, password);
   if (error) {
-    msgEl.innerHTML = `<div class="msg error">${error.message}</div>`;
+    msgEl.innerHTML = `<div class="msg error">⚠️ ${error.message}</div>`;
     return;
   }
   await checkAccess();
@@ -156,14 +212,16 @@ async function checkAccess() {
   const profile = await dlbGetMyProfile();
   if (!profile || (profile.role !== "admin" && profile.role !== "staff")) {
     document.getElementById("gateMsg").innerHTML =
-      `<div class="msg error">That account doesn't have staff/admin access.</div>`;
+      `<div class="msg error">⚠️ That account doesn't have staff/admin access.</div>`;
     return;
   }
   me = profile;
   document.getElementById("gate").style.display = "none";
   document.getElementById("dash").style.display = "block";
   document.getElementById("headerRight").style.display = "flex";
-  document.getElementById("whoAmI").textContent = me.full_name || me.email;
+  const label = me.full_name || me.email;
+  document.getElementById("whoAmI").textContent = label;
+  document.getElementById("whoAvatar").textContent = initials(label);
   await loadDashboard();
 }
 
@@ -192,24 +250,37 @@ function locationLabel(p) {
 
 function renderUserRows() {
   const tbody = document.getElementById("userRows");
-  if (!allProfiles.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty">No accounts yet.</td></tr>`;
+  let list = allProfiles;
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = allProfiles.filter(p =>
+      (p.full_name || "").toLowerCase().includes(q) ||
+      (p.email || "").toLowerCase().includes(q)
+    );
+  }
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty"><span class="big">📭</span>${allProfiles.length ? "No matching accounts." : "No accounts yet."}</td></tr>`;
     return;
   }
   tbody.innerHTML = "";
-  allProfiles.forEach((p) => {
+  list.forEach((p) => {
     const tr = document.createElement("tr");
     if (p.id === selectedCustomerId) tr.classList.add("selected");
     const isAdmin = p.role === "admin";
     tr.innerHTML = `
-      <td><div class="name">${p.full_name || "(no name)"}</div><div class="sub">${p.email}</div></td>
-      <td><span class="badge ${p.role}">${p.role}</span></td>
+      <td>
+        <div class="row-user">
+          <div class="row-avatar ${p.role}">${initials(p.full_name || p.email)}</div>
+          <div><div class="name">${p.full_name || "(no name)"}</div><div class="sub">${p.email}</div></div>
+        </div>
+      </td>
+      <td><span class="badge ${p.role}">${roleIcon(p.role)} ${p.role}</span></td>
       <td>${locationLabel(p)}</td>
       <td>$${((p.total_spent_cents || 0) / 100).toFixed(2)}</td>
       <td class="sub">${p.last_seen_at ? new Date(p.last_seen_at).toLocaleString() : "–"}</td>
       <td>
         <div class="row-actions">
-          <button class="btn btn-outline btn-small" data-chat="${p.id}">Chat</button>
+          <button class="btn btn-outline btn-small" data-chat="${p.id}">💬 Chat</button>
           <button class="btn ${isAdmin ? "btn-outline" : "btn-amber"} btn-small" data-role="${p.id}" data-newrole="${isAdmin ? "customer" : "admin"}">
             ${isAdmin ? "Remove admin" : "Make admin"}
           </button>
@@ -232,11 +303,16 @@ function renderUserRows() {
   });
 }
 
+document.getElementById("userSearch").addEventListener("input", (e) => {
+  searchTerm = e.target.value;
+  renderUserRows();
+});
+
 async function openChat(customerId) {
   selectedCustomerId = customerId;
   const customer = allProfiles.find((p) => p.id === customerId);
-  document.getElementById("chatWithName").textContent =
-    "Chat with " + (customer.full_name || customer.email);
+  document.getElementById("chatWithName").innerHTML =
+    `<div class="row-user"><div class="row-avatar ${customer.role}">${initials(customer.full_name || customer.email)}</div><span>${customer.full_name || customer.email}</span></div>`;
   document.getElementById("chatInput").disabled = false;
   document.getElementById("chatSendBtn").disabled = false;
   renderUserRows();
@@ -246,7 +322,7 @@ async function openChat(customerId) {
   const msgs = await dlbGetMessages(customerId);
   log.innerHTML = "";
   if (!msgs.length) {
-    log.innerHTML = `<div class="empty">No messages yet.</div>`;
+    log.innerHTML = `<div class="empty"><span class="big">👋</span>No messages yet.</div>`;
   } else {
     msgs.forEach(renderChatMessage);
   }
@@ -258,10 +334,15 @@ function renderChatMessage(m) {
   const emptyEl = log.querySelector(".empty");
   if (emptyEl) emptyEl.remove();
   const mine = m.sender_id === me.id;
-  const div = document.createElement("div");
-  div.className = "bubble " + (mine ? "mine" : "theirs");
-  div.innerHTML = `<div class="who">${mine ? "You" : "Customer"}</div>${m.body.replace(/</g, "&lt;")}`;
-  log.appendChild(div);
+  const row = document.createElement("div");
+  row.className = "bubble-row " + (mine ? "mine" : "theirs");
+  const av = mine ? initials(me.full_name || me.email) : "C";
+  row.innerHTML = `
+    <div class="mini-avatar">${av}</div>
+    <div class="bubble ${mine ? "mine" : "theirs"}">
+      <div class="who">${mine ? "You" : "Customer"}</div>${m.body.replace(/</g, "&lt;")}
+    </div>`;
+  log.appendChild(row);
   log.scrollTop = log.scrollHeight;
 }
 
