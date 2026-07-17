@@ -182,3 +182,56 @@ async function dlbGetVisits(limit = 200) {
   }
   return data;
 }
+
+// ---- Visitor messages ("Talk to a human" handoff) --------------------------
+// Anonymous visitors (not signed in) can send one of these from the public
+// site. Staff/admin see and resolve them from the admin dashboard. This is
+// completely separate from the Chatbase bot widget and from the signed-in
+// customer chat (messages table) — it's a standalone inbox.
+async function dlbSendVisitorMessage(name, contact, message, page) {
+  if (!DLB_CONFIGURED) return false;
+  const { error } = await sb.from("visitor_messages").insert({
+    name: name || null,
+    contact: contact || null,
+    message,
+    page: page || window.location.pathname,
+  });
+  if (error) console.error("dlbSendVisitorMessage error", error);
+  return !error;
+}
+
+async function dlbGetVisitorMessages(limit = 200) {
+  if (!DLB_CONFIGURED) return [];
+  const { data, error } = await sb
+    .from("visitor_messages")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error("dlbGetVisitorMessages error", error);
+    return [];
+  }
+  return data;
+}
+
+async function dlbMarkVisitorMessageResolved(id, resolved) {
+  if (!DLB_CONFIGURED) return false;
+  const { error } = await sb
+    .from("visitor_messages")
+    .update({ resolved })
+    .eq("id", id);
+  if (error) console.error("dlbMarkVisitorMessageResolved error", error);
+  return !error;
+}
+
+function dlbSubscribeToVisitorMessages(onInsert) {
+  if (!DLB_CONFIGURED) return null;
+  return sb
+    .channel("visitor-messages")
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "visitor_messages" },
+      (payload) => onInsert(payload.new)
+    )
+    .subscribe();
+}
