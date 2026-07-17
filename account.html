@@ -172,6 +172,10 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
 
   <!-- Logged IN view -->
   <div id="loggedIn">
+    <div class="card" id="checkoutSuccessCard" style="margin-bottom:18px;display:none;background:#eafaf0;border-color:#bfe8cf">
+      <div class="msg ok" style="padding:0;font-size:15px"><span id="checkoutSuccessIcon"></span><span id="checkoutSuccessText"></span></div>
+    </div>
+
     <div class="card">
       <div class="top-row">
         <div class="profile-card">
@@ -238,6 +242,22 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
       <p class="sub" style="margin-bottom:0">We're still building your assistant — once it's ready, the embed code to add it to your website will show up here. We'll also message you when it's live.</p>
     </div>
 
+    <div class="card" id="websiteCard" style="margin-top:18px;display:none">
+      <h1 style="font-size:18px">Where should we install your bot?</h1>
+      <p class="sub" style="margin-bottom:16px">Tell us your website address and we'll take it from there — no plugins or downloads needed on your end. (If you or your web person would rather add it yourselves, the copy-paste code above works too.)</p>
+      <form id="websiteFormEl">
+        <label>Your website</label>
+        <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg></span><input type="url" id="websiteUrl" placeholder="https://yourbusiness.com" required></div>
+        <button class="btn btn-primary btn-small" type="submit" style="margin-top:10px">Save</button>
+        <div id="websiteMsg" style="margin-top:8px"></div>
+      </form>
+    </div>
+
+    <div class="card" id="websiteSavedCard" style="margin-top:18px;display:none">
+      <h1 style="font-size:18px">Your website</h1>
+      <p class="sub" style="margin-bottom:0"><span id="websiteSavedUrl"></span> — <a href="#" id="websiteEditLink" style="color:var(--blue-dark);font-weight:600">change</a></p>
+    </div>
+
     <div class="card" style="margin-top:18px">
       <div class="chat-label"><span class="pulse"></span> Live chat with our team</div>
       <p class="sub" style="margin-top:4px;margin-bottom:0">Send a message and someone from our team will reply here.</p>
@@ -299,6 +319,7 @@ document.getElementById("loginFormEl").addEventListener("submit", async (e) => {
     return;
   }
   await showLoggedIn();
+  await handleCheckoutParams();
 });
 
 document.getElementById("signOutBtn").addEventListener("click", async () => {
@@ -381,6 +402,15 @@ async function showLoggedIn() {
   } else {
     document.getElementById("botCard").style.display = "none";
     document.getElementById("botPendingCard").style.display = "block";
+  }
+
+  if (myProfile.website_url) {
+    document.getElementById("websiteCard").style.display = "none";
+    document.getElementById("websiteSavedCard").style.display = "block";
+    document.getElementById("websiteSavedUrl").textContent = myProfile.website_url;
+  } else {
+    document.getElementById("websiteCard").style.display = "block";
+    document.getElementById("websiteSavedCard").style.display = "none";
   }
 
   const msgs = await dlbGetMessages(myProfile.id);
@@ -494,6 +524,55 @@ document.getElementById("passwordFormEl").addEventListener("submit", async (e) =
   msgEl.innerHTML = `<div class="msg ok">${ICON_CHECK}Password updated.</div>`;
 });
 
+// ---- Website URL (where to install the bot) ----
+document.getElementById("websiteFormEl").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const url = document.getElementById("websiteUrl").value.trim();
+  const msgEl = document.getElementById("websiteMsg");
+  msgEl.innerHTML = "";
+  const ok = await dlbSetMyWebsite(url);
+  if (!ok) {
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}Couldn't save — try again.</div>`;
+    return;
+  }
+  myProfile.website_url = url;
+  document.getElementById("websiteCard").style.display = "none";
+  document.getElementById("websiteSavedCard").style.display = "block";
+  document.getElementById("websiteSavedUrl").textContent = url;
+});
+
+document.getElementById("websiteEditLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  document.getElementById("websiteUrl").value = myProfile.website_url || "";
+  document.getElementById("websiteSavedCard").style.display = "none";
+  document.getElementById("websiteCard").style.display = "block";
+});
+
+// ---- Post-checkout ----
+// If we just got bounced back from Stripe, or the pricing page sent us here
+// with a plan to resume once logged in, handle both here.
+async function handleCheckoutParams() {
+  const params = new URLSearchParams(window.location.search);
+  const checkout = params.get("checkout");
+  const nextPlan = params.get("next");
+
+  if (checkout === "success") {
+    const card = document.getElementById("checkoutSuccessCard");
+    card.style.display = "block";
+    document.getElementById("checkoutSuccessIcon").innerHTML = ICON_CHECK;
+    document.getElementById("checkoutSuccessText").textContent =
+      " Payment received — thank you! If you haven't already, tell us your website below so we know where to install your bot.";
+    // Clean the URL so a refresh doesn't re-show this.
+    window.history.replaceState({}, "", "account.html");
+    return;
+  }
+
+  if (nextPlan && ["starter", "most_common", "maintenance"].includes(nextPlan)) {
+    window.history.replaceState({}, "", "account.html");
+    await dlbStartCheckout(nextPlan);
+  }
+}
+
 // ---- Init ----
 (async () => {
   // Respect ?tab=login / ?tab=signup from nav buttons
@@ -504,7 +583,10 @@ document.getElementById("passwordFormEl").addEventListener("submit", async (e) =
 
   await dlbLogVisit("/account.html");
   const session = await dlbGetSession();
-  if (session) await showLoggedIn();
+  if (session) {
+    await showLoggedIn();
+    await handleCheckoutParams();
+  }
 })();
 </script>
 </body>

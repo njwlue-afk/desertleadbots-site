@@ -87,6 +87,69 @@ async function dlbUploadAvatar(userId, file) {
   return { url: publicUrl, error: null };
 }
 
+// ---- Checkout (Stripe) ------------------------------------------------------
+// Kicks off a Stripe Checkout session for one of the three packages
+// ("starter" | "most_common" | "maintenance") and sends the browser there.
+// If the shopper isn't signed in yet, we bounce them to account.html with
+// ?next=<plan> so they land back here and auto-resume checkout right after
+// they log in — see the account.html script for that half.
+async function dlbStartCheckout(plan) {
+  if (!DLB_CONFIGURED) return { error: { message: "Checkout isn't set up yet." } };
+  const session = await dlbGetSession();
+  if (!session) {
+    window.location.href = "account.html?next=" + encodeURIComponent(plan);
+    return { error: null };
+  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/create-checkout-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ plan }),
+    });
+    const data = await res.json();
+    if (res.ok && data.url) {
+      window.location.href = data.url;
+      return { error: null };
+    }
+    return { error: data.error || { message: "Couldn't start checkout." } };
+  } catch (e) {
+    console.error("dlbStartCheckout error", e);
+    return { error: { message: "Couldn't reach checkout. Try again in a moment." } };
+  }
+}
+
+// Save where a customer wants their bot installed — shown to staff on the
+// admin dashboard so they know exactly where to go once the bot is built.
+async function dlbSetMyWebsite(url) {
+  if (!DLB_CONFIGURED) return false;
+  const session = await dlbGetSession();
+  if (!session) return false;
+  const { error } = await sb.from("profiles").update({ website_url: url }).eq("id", session.user.id);
+  if (error) console.error("dlbSetMyWebsite error", error);
+  return !error;
+}
+
+// ---- Orders ---------------------------------------------------------------
+async function dlbGetMyOrders() {
+  if (!DLB_CONFIGURED) return [];
+  const session = await dlbGetSession();
+  if (!session) return [];
+  const { data, error } = await sb
+    .from("orders")
+    .select("*")
+    .eq("customer_id", session.user.id)
+    .order("created_at", { ascending: false });
+  if (error) {
+    console.error("dlbGetMyOrders error", error);
+    return [];
+  }
+  return data;
+}
+
 // ---- Chat ---------------------------------------------------------------
 async function dlbGetMessages(customerId) {
   if (!DLB_CONFIGURED) return [];

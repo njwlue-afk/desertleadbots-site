@@ -131,6 +131,8 @@
   .price-card li{padding:7px 0;border-top:1px solid #f0f3f7;display:flex;align-items:flex-start;gap:8px}
   .price-card li:first-child{border-top:none}
   .price-card li svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:2px}
+  .price-card .btn{display:block;width:100%;text-align:center;margin-top:20px;padding:12px 18px;font-size:14px;border:none;cursor:pointer;font-family:inherit}
+  .price-card .btn-ghost{border:1.5px solid var(--border);background:#fff}
   @media(max-width:700px){.price-card.pop{transform:none}}
 
   /* Contact */
@@ -344,6 +346,7 @@
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Live in 48–72 hours</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>2 weeks of free tweaks</li>
         </ul>
+        <button class="btn btn-ghost" type="button" onclick="dlbStartCheckout('starter')">Get started — $150</button>
       </div>
       <div class="price-card pop">
         <span class="tag">MOST COMMON</span>
@@ -354,6 +357,7 @@
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Booking or CRM integration</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom design to match your site</li>
         </ul>
+        <button class="btn btn-primary" type="button" onclick="dlbStartCheckout('most_common')">Get started — $350</button>
       </div>
       <div class="price-card">
         <span class="tag">MAINTENANCE</span>
@@ -363,8 +367,10 @@
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Content updates as your business changes</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
         </ul>
+        <button class="btn btn-ghost" type="button" onclick="dlbStartCheckout('maintenance')">Subscribe — $50/mo</button>
       </div>
     </div>
+    <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:18px">First time? You'll be asked to create a free account before payment — that's how we track your order and deliver your bot afterward.</p>
   </div>
 </section>
 
