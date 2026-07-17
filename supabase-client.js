@@ -52,6 +52,41 @@ async function dlbGetMyProfile() {
   return data;
 }
 
+// ---- Account settings -----------------------------------------------------
+async function dlbUpdateProfile(fields) {
+  if (!DLB_CONFIGURED) return false;
+  const session = await dlbGetSession();
+  if (!session) return false;
+  const { error } = await sb.from("profiles").update(fields).eq("id", session.user.id);
+  if (error) console.error("dlbUpdateProfile error", error);
+  return !error;
+}
+
+async function dlbUpdateEmail(newEmail) {
+  if (!DLB_CONFIGURED) return { error: { message: "Accounts aren't set up yet." } };
+  const { error } = await sb.auth.updateUser({ email: newEmail });
+  return { error };
+}
+
+async function dlbUpdatePassword(newPassword) {
+  if (!DLB_CONFIGURED) return { error: { message: "Accounts aren't set up yet." } };
+  const { error } = await sb.auth.updateUser({ password: newPassword });
+  return { error };
+}
+
+async function dlbUploadAvatar(userId, file) {
+  if (!DLB_CONFIGURED) return { url: null, error: { message: "Accounts aren't set up yet." } };
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const path = `${userId}/avatar.${ext}`;
+  const { error: uploadError } = await sb.storage.from("avatars").upload(path, file, { upsert: true });
+  if (uploadError) return { url: null, error: uploadError };
+  const { data } = sb.storage.from("avatars").getPublicUrl(path);
+  const publicUrl = data.publicUrl + "?t=" + Date.now();
+  const { error: profileError } = await sb.from("profiles").update({ avatar_url: publicUrl }).eq("id", userId);
+  if (profileError) return { url: null, error: profileError };
+  return { url: publicUrl, error: null };
+}
+
 // ---- Chat ---------------------------------------------------------------
 async function dlbGetMessages(customerId) {
   if (!DLB_CONFIGURED) return [];

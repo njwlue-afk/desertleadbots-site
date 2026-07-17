@@ -174,8 +174,47 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
             <div><span class="role-pill" id="hiRole">Customer</span></div>
           </div>
         </div>
-        <button class="btn btn-ghost" id="signOutBtn">Sign out</button>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button class="btn btn-ghost" id="settingsToggleBtn"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</button>
+          <button class="btn btn-ghost" id="signOutBtn">Sign out</button>
+        </div>
       </div>
+    </div>
+
+    <div class="card" id="settingsCard" style="margin-top:18px;display:none">
+      <h1 style="font-size:18px">Account settings</h1>
+      <p class="sub" style="margin-bottom:22px">Update your photo, name, email, or password.</p>
+
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
+        <div class="avatar" id="settingsAvatar" style="width:64px;height:64px;font-size:22px;cursor:pointer" title="Click to change photo">?</div>
+        <div>
+          <button class="btn btn-outline btn-small" id="avatarUploadBtn" type="button">Change photo</button>
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none">
+          <div id="avatarMsg" style="margin-top:6px"></div>
+        </div>
+      </div>
+
+      <form id="nameFormEl" style="margin-bottom:20px">
+        <label>Full name</label>
+        <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span><input type="text" id="settingsName" required></div>
+        <button class="btn btn-primary btn-small" type="submit" style="margin-top:10px">Save name</button>
+        <div id="nameMsg" style="margin-top:8px"></div>
+      </form>
+
+      <form id="emailFormEl" style="margin-bottom:20px">
+        <label>Email</label>
+        <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><input type="email" id="settingsEmail" required></div>
+        <button class="btn btn-primary btn-small" type="submit" style="margin-top:10px">Save email</button>
+        <p class="sub" style="margin-top:8px;margin-bottom:0;font-size:12.5px">You'll get a confirmation link at the new address before it takes effect.</p>
+        <div id="emailMsg" style="margin-top:8px"></div>
+      </form>
+
+      <form id="passwordFormEl">
+        <label>New password</label>
+        <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span><input type="password" id="settingsPassword" minlength="6" placeholder="Leave blank to keep current password"></div>
+        <button class="btn btn-primary btn-small" type="submit" style="margin-top:10px">Save password</button>
+        <div id="passwordMsg" style="margin-top:8px"></div>
+      </form>
     </div>
 
     <div class="card" style="margin-top:18px">
@@ -286,6 +325,18 @@ async function sendChat() {
   await dlbSendMessage(myProfile.id, myProfile.id, body);
 }
 
+function applyAvatar(el, url, fallbackInitials) {
+  if (url) {
+    el.style.backgroundImage = `url("${url}")`;
+    el.style.backgroundSize = "cover";
+    el.style.backgroundPosition = "center";
+    el.textContent = "";
+  } else {
+    el.style.backgroundImage = "";
+    el.textContent = fallbackInitials;
+  }
+}
+
 async function showLoggedIn() {
   myProfile = await dlbGetMyProfile();
   if (!myProfile) return;
@@ -294,8 +345,11 @@ async function showLoggedIn() {
   const displayName = myProfile.full_name || myProfile.email;
   document.getElementById("hiName").textContent = "Hi, " + displayName;
   document.getElementById("hiEmail").textContent = myProfile.email;
-  document.getElementById("hiAvatar").textContent = initials(displayName);
+  applyAvatar(document.getElementById("hiAvatar"), myProfile.avatar_url, initials(displayName));
+  applyAvatar(document.getElementById("settingsAvatar"), myProfile.avatar_url, initials(displayName));
   document.getElementById("hiRole").textContent = myProfile.role || "customer";
+  document.getElementById("settingsName").value = myProfile.full_name || "";
+  document.getElementById("settingsEmail").value = myProfile.email || "";
   const adminLink = document.getElementById("navAdmin");
   if (adminLink) adminLink.style.display = (myProfile.role === "admin" || myProfile.role === "staff") ? "inline-flex" : "none";
 
@@ -308,6 +362,84 @@ async function showLoggedIn() {
   if (chatChannel) sb.removeChannel(chatChannel);
   chatChannel = dlbSubscribeToMessages(myProfile.id, renderMessage);
 }
+
+// ---- Settings ----
+document.getElementById("settingsToggleBtn").addEventListener("click", () => {
+  const card = document.getElementById("settingsCard");
+  card.style.display = card.style.display === "none" ? "block" : "none";
+});
+
+document.getElementById("settingsAvatar").addEventListener("click", () => {
+  document.getElementById("avatarFileInput").click();
+});
+document.getElementById("avatarUploadBtn").addEventListener("click", () => {
+  document.getElementById("avatarFileInput").click();
+});
+
+document.getElementById("avatarFileInput").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const msgEl = document.getElementById("avatarMsg");
+  msgEl.innerHTML = `<div class="msg ok" style="display:inline-block;padding:6px 10px">Uploading…</div>`;
+  const { url, error } = await dlbUploadAvatar(myProfile.id, file);
+  if (error) {
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}${error.message}</div>`;
+    return;
+  }
+  myProfile.avatar_url = url;
+  applyAvatar(document.getElementById("hiAvatar"), url, initials(myProfile.full_name || myProfile.email));
+  applyAvatar(document.getElementById("settingsAvatar"), url, initials(myProfile.full_name || myProfile.email));
+  msgEl.innerHTML = `<div class="msg ok">${ICON_CHECK}Photo updated.</div>`;
+});
+
+document.getElementById("nameFormEl").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const name = document.getElementById("settingsName").value.trim();
+  const msgEl = document.getElementById("nameMsg");
+  msgEl.innerHTML = "";
+  const ok = await dlbUpdateProfile({ full_name: name });
+  if (!ok) {
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}Couldn't save — try again.</div>`;
+    return;
+  }
+  myProfile.full_name = name;
+  document.getElementById("hiName").textContent = "Hi, " + (name || myProfile.email);
+  applyAvatar(document.getElementById("hiAvatar"), myProfile.avatar_url, initials(name || myProfile.email));
+  applyAvatar(document.getElementById("settingsAvatar"), myProfile.avatar_url, initials(name || myProfile.email));
+  msgEl.innerHTML = `<div class="msg ok">${ICON_CHECK}Name updated.</div>`;
+});
+
+document.getElementById("emailFormEl").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const newEmail = document.getElementById("settingsEmail").value.trim();
+  const msgEl = document.getElementById("emailMsg");
+  msgEl.innerHTML = "";
+  const { error } = await dlbUpdateEmail(newEmail);
+  if (error) {
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}${error.message}</div>`;
+    return;
+  }
+  msgEl.innerHTML = `<div class="msg ok">${ICON_CHECK}Check ${newEmail} for a confirmation link to finish the change.</div>`;
+});
+
+document.getElementById("passwordFormEl").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const pwInput = document.getElementById("settingsPassword");
+  const newPassword = pwInput.value;
+  const msgEl = document.getElementById("passwordMsg");
+  msgEl.innerHTML = "";
+  if (!newPassword) {
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}Enter a new password first.</div>`;
+    return;
+  }
+  const { error } = await dlbUpdatePassword(newPassword);
+  if (error) {
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}${error.message}</div>`;
+    return;
+  }
+  pwInput.value = "";
+  msgEl.innerHTML = `<div class="msg ok">${ICON_CHECK}Password updated.</div>`;
+});
 
 // ---- Init ----
 (async () => {
