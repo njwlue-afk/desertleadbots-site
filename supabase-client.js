@@ -148,6 +148,16 @@ async function dlbSetRole(userId, role) {
   return !error;
 }
 
+// Set (or clear) a customer's Chatbase agent ID once their bot is built —
+// this is what makes the ready-to-paste embed snippet appear on their
+// account page. Staff/admin only (enforced by RLS).
+async function dlbSetChatbotAgentId(userId, agentId) {
+  if (!DLB_CONFIGURED) return false;
+  const { error } = await sb.from("profiles").update({ chatbot_agent_id: agentId || null }).eq("id", userId);
+  if (error) console.error("dlbSetChatbotAgentId error", error);
+  return !error;
+}
+
 function dlbSubscribeToAllMessages(onInsert) {
   if (!DLB_CONFIGURED) return null;
   return sb

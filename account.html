@@ -217,6 +217,19 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
       </form>
     </div>
 
+    <div class="card" id="botCard" style="margin-top:18px;display:none">
+      <h1 style="font-size:18px">Your AI chatbot</h1>
+      <p class="sub" id="botReadyMsg" style="margin-bottom:16px">Paste this snippet into your website's HTML, right before the closing <code>&lt;/body&gt;</code> tag, and your assistant goes live.</p>
+      <pre id="botSnippetBox" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-x:auto;white-space:pre-wrap;word-break:break-all;color:var(--text);margin-bottom:12px"></pre>
+      <button class="btn btn-primary btn-small" id="copySnippetBtn" type="button">Copy code</button>
+      <span id="copySnippetMsg" style="margin-left:10px;font-size:13px;color:var(--green);display:none">Copied!</span>
+    </div>
+
+    <div class="card" id="botPendingCard" style="margin-top:18px;display:none">
+      <h1 style="font-size:18px">Your AI chatbot</h1>
+      <p class="sub" style="margin-bottom:0">We're still building your assistant — once it's ready, the embed code to add it to your website will show up here. We'll also message you when it's live.</p>
+    </div>
+
     <div class="card" style="margin-top:18px">
       <div class="chat-label"><span class="pulse"></span> Live chat with our team</div>
       <p class="sub" style="margin-top:4px;margin-bottom:0">Send a message and someone from our team will reply here.</p>
@@ -353,6 +366,15 @@ async function showLoggedIn() {
   const adminLink = document.getElementById("navAdmin");
   if (adminLink) adminLink.style.display = (myProfile.role === "admin" || myProfile.role === "staff") ? "inline-flex" : "none";
 
+  if (myProfile.chatbot_agent_id) {
+    document.getElementById("botCard").style.display = "block";
+    document.getElementById("botPendingCard").style.display = "none";
+    document.getElementById("botSnippetBox").textContent = buildEmbedSnippet(myProfile.chatbot_agent_id);
+  } else {
+    document.getElementById("botCard").style.display = "none";
+    document.getElementById("botPendingCard").style.display = "block";
+  }
+
   const msgs = await dlbGetMessages(myProfile.id);
   if (msgs.length) {
     document.getElementById("chatLog").innerHTML = "";
@@ -362,6 +384,29 @@ async function showLoggedIn() {
   if (chatChannel) sb.removeChannel(chatChannel);
   chatChannel = dlbSubscribeToMessages(myProfile.id, renderMessage);
 }
+
+// ---- Chatbot embed delivery ----
+function buildEmbedSnippet(agentId) {
+  const safeId = String(agentId).replace(/[^a-zA-Z0-9_-]/g, "");
+  return `<script>\n(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="${safeId}";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();\n<\/script>`;
+}
+
+document.getElementById("copySnippetBtn").addEventListener("click", async () => {
+  const text = document.getElementById("botSnippetBox").textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    const range = document.createRange();
+    range.selectNode(document.getElementById("botSnippetBox"));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges();
+  }
+  const msg = document.getElementById("copySnippetMsg");
+  msg.style.display = "inline";
+  setTimeout(() => { msg.style.display = "none"; }, 1800);
+});
 
 // ---- Settings ----
 document.getElementById("settingsToggleBtn").addEventListener("click", () => {

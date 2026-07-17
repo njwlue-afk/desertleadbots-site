@@ -205,6 +205,7 @@ const ICON_WRENCH = '<svg width="11" height="11" viewBox="0 0 24 24" style="vert
 const ICON_USER_SM = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>';
 const ICON_INBOX = '<svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>';
 const ICON_CHAT_SM = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.8 7.6 8.5 8.5 0 01-7.6-.4L3 21l1.9-5.7a8.38 8.38 0 01-.4-3.8 8.5 8.5 0 017.6-7.6 8.38 8.38 0 018.5 5.9c.2.68.3 1.39.3 2.1z"/></svg>';
+const ICON_BOT = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none"/><path d="M12 8V4M9 4h6"/></svg>';
 
 let me = null;
 let allProfiles = [];
@@ -372,6 +373,9 @@ function renderUserRows() {
       <td>
         <div class="row-actions">
           <button class="btn btn-outline btn-small" data-chat="${p.id}">${ICON_CHAT_SM} Chat</button>
+          <button class="btn ${p.chatbot_agent_id ? "btn-outline" : "btn-amber"} btn-small" data-bot="${p.id}" data-current="${p.chatbot_agent_id || ""}">
+            ${ICON_BOT} ${p.chatbot_agent_id ? "Edit bot ID" : "Set bot ID"}
+          </button>
           <button class="btn ${isAdmin ? "btn-outline" : "btn-amber"} btn-small" data-role="${p.id}" data-newrole="${isAdmin ? "customer" : "admin"}">
             ${isAdmin ? "Remove admin" : "Make admin"}
           </button>
@@ -383,6 +387,15 @@ function renderUserRows() {
 
   tbody.querySelectorAll("[data-chat]").forEach((btn) => {
     btn.addEventListener("click", () => openChat(btn.dataset.chat));
+  });
+  tbody.querySelectorAll("[data-bot]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const current = btn.dataset.current || "";
+      const agentId = prompt("Chatbase agent ID for this customer's bot (leave blank to clear):", current);
+      if (agentId === null) return; // cancelled
+      await dlbSetChatbotAgentId(btn.dataset.bot, agentId.trim());
+      await loadDashboard();
+    });
   });
   tbody.querySelectorAll("[data-role]").forEach((btn) => {
     btn.addEventListener("click", async () => {
