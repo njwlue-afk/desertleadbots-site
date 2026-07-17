@@ -291,6 +291,12 @@ async function showLoggedIn() {
 
 // ---- Init ----
 (async () => {
+  // Respect ?tab=login / ?tab=signup from nav buttons
+  const wantedTab = new URLSearchParams(window.location.search).get("tab");
+  if (wantedTab === "signup") {
+    document.querySelector('.tab[data-tab="signup"]').click();
+  }
+
   await dlbLogVisit("/account.html");
   const session = await dlbGetSession();
   if (session) await showLoggedIn();

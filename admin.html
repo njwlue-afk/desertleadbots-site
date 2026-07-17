@@ -54,13 +54,15 @@ header .right{display:flex;align-items:center;gap:14px;font-size:13.5px}
 .stat .l{font-size:12px;color:var(--muted);font-weight:600}
 
 .layout{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;padding:20px 28px 40px;align-items:start;max-width:1280px;margin:0 auto}
+.visitor-wrap{padding:0 28px 40px;max-width:1280px;margin:0 auto}
+.stat.pending .icon{background:#fde9e9;color:var(--red)}
 .panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
 .panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border);gap:12px}
 .panel-head h2{font-size:15px;color:var(--navy)}
 .search-box{position:relative}
 .search-box input{padding:8px 12px 8px 30px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;width:180px;background:var(--bg)}
 .search-box input:focus{outline:none;border-color:var(--blue);background:#fff}
-.search-box .icz�osition:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.6}
+.search-box .ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.6}
 
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;background:var(--bg)}
@@ -140,6 +142,7 @@ tr.selected td{background:#eaf1fb !important}
     <div class="stat users"><div class="icon">👥</div><div><div class="n" id="statUsers">–</div><div class="l">Registered accounts</div></div></div>
     <div class="stat visits"><div class="icon">📍</div><div><div class="n" id="statVisits">–</div><div class="l">Visits (last 200 logged)</div></div></div>
     <div class="stat spend"><div class="icon">💰</div><div><div class="n" id="statSpend">–</div><div class="l">Total spend tracked</div></div></div>
+    <div class="stat pending"><div class="icon">🙋</div><div><div class="n" id="statPending">–</div><div class="l">Pending human requests</div></div></div>
   </div>
 
   <div class="layout">
@@ -165,6 +168,19 @@ tr.selected td{background:#eaf1fb !important}
       </div>
     </div>
   </div>
+
+  <div class="visitor-wrap">
+    <div class="panel" id="visitorPanel">
+      <div class="panel-head">
+        <h2>🙋 Talk-to-a-human requests</h2>
+        <span class="sub">From the "Talk to a human" button on the site — separate from the bot widget</span>
+      </div>
+      <table>
+        <thead><tr><th>From</th><th>Message</th><th>Page</th><th>When</th><th></th></tr></thead>
+        <tbody id="visitorRows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -176,6 +192,8 @@ let allProfiles = [];
 let selectedCustomerId = null;
 let chatChannel = null;
 let searchTerm = "";
+let visitorMessages = [];
+let visitorChannel = null;
 
 function initials(str) {
   if (!str) return "?";
@@ -228,19 +246,73 @@ async function checkAccess() {
 async function loadDashboard() {
   allProfiles = await dlbGetAllProfiles();
   const visits = await dlbGetVisits(200);
+  visitorMessages = await dlbGetVisitorMessages(200);
 
   document.getElementById("statUsers").textContent = allProfiles.length;
   document.getElementById("statVisits").textContent = visits.length;
   const totalSpent = allProfiles.reduce((sum, p) => sum + (p.total_spent_cents || 0), 0);
   document.getElementById("statSpend").textContent = "$" + (totalSpent / 100).toFixed(2);
+  updatePendingStat();
 
   renderUserRows();
+  renderVisitorRows();
 
   if (!chatChannel) {
     chatChannel = dlbSubscribeToAllMessages((m) => {
       if (m.customer_id === selectedCustomerId) renderChatMessage(m);
     });
   }
+
+  if (!visitorChannel) {
+    visitorChannel = dlbSubscribeToVisitorMessages((v) => {
+      visitorMessages.unshift(v);
+      renderVisitorRows();
+      updatePendingStat();
+    });
+  }
+}
+
+function updatePendingStat() {
+  const pending = visitorMessages.filter((v) => !v.resolved).length;
+  document.getElementById("statPending").textContent = pending;
+}
+
+function renderVisitorRows() {
+  const tbody = document.getElementById("visitorRows");
+  if (!visitorMessages.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty"><span class="big">📭</span>No requests yet.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = "";
+  visitorMessages.forEach((v) => {
+    const tr = document.createElement("tr");
+    if (v.resolved) tr.style.opacity = "0.55";
+    const who = (v.name || v.contact) ? [v.name, v.contact].filter(Boolean).join(" · ") : "Anonymous visitor";
+    tr.innerHTML = `
+      <td><div class="name">${who}</div></td>
+      <td class="sub" style="max-width:320px">${(v.message || "").replace(/</g, "&lt;")}</td>
+      <td class="sub">${v.page || "–"}</td>
+      <td class="sub">${v.created_at ? new Date(v.created_at).toLocaleString() : "–"}</td>
+      <td>
+        <button class="btn ${v.resolved ? "btn-outline" : "btn-amber"} btn-small" data-resolve="${v.id}" data-newresolved="${v.resolved ? "false" : "true"}">
+          ${v.resolved ? "Reopen" : "Mark resolved"}
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll("[data-resolve]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.resolve;
+      const newResolved = btn.dataset.newresolved === "true";
+      await dlbMarkVisitorMessageResolved(id, newResolved);
+      const item = visitorMessages.find((v) => v.id === id);
+      if (item) item.resolved = newResolved;
+      renderVisitorRows();
+      updatePendingStat();
+    });
+  });
 }
 
 function locationLabel(p) {
