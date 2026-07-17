@@ -56,6 +56,9 @@
   .nav-signup:hover{background:#dbe8fb}
   .nav-account{display:none;align-items:center;gap:8px;background:#eaf1fb;color:var(--blue-dark);text-decoration:none;padding:7px 14px 7px 7px;border-radius:999px;font-weight:700;font-size:14px}
   .nav-account:hover{background:#dbe8fb}
+  .nav-admin{display:none;align-items:center;gap:6px;color:var(--blue-dark);text-decoration:none;font-weight:700;font-size:14px;background:#eaf1fb;padding:9px 14px;border-radius:9px}
+  .nav-admin:hover{background:#dbe8fb}
+  .nav-admin svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .nav-account .avatar{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
 
   /* Hero */
@@ -187,6 +190,7 @@
       <a href="/account.html?tab=login" class="nav-login" id="navLogin">Log In</a>
       <a href="/account.html?tab=signup" class="nav-signup" id="navSignup">Sign Up</a>
       <a href="/account.html" class="nav-account" id="navAccount"><span class="avatar" id="navAccountAvatar">?</span><span id="navAccountName">Account</span></a>
+      <a href="/admin.html" class="nav-admin" id="navAdmin"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6.5.9-4.7 4.6 1.1 6.5-5.9-3.1-5.9 3.1 1.1-6.5-4.7-4.6L9 2z"/></svg>Admin</a>
       <a class="nav-cta" href="#contact">Get a Free Preview</a>
     </div>
   </nav>
@@ -331,7 +335,7 @@
     <div class="price-row">
       <div class="price-card">
         <span class="tag">STARTER</span>
-        <div class="amt">$500<span>one-time</span></div>
+        <div class="amt">$150<span>one-time</span></div>
         <ul>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>FAQ + lead capture assistant</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Trained on your website content</li>
@@ -341,7 +345,7 @@
       </div>
       <div class="price-card pop">
         <span class="tag">MOST COMMON</span>
-        <div class="amt">$1,000+<span>one-time</span></div>
+        <div class="amt">$350+<span>one-time</span></div>
         <ul>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Everything in Starter</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Instant text/email lead alerts</li>
@@ -351,7 +355,7 @@
       </div>
       <div class="price-card">
         <span class="tag">MAINTENANCE</span>
-        <div class="amt">$50–150<span>/month</span></div>
+        <div class="amt">$30–75<span>/month</span></div>
         <ul>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Hosting &amp; monitoring</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Content updates as your business changes</li>
@@ -475,6 +479,10 @@
     if (profile && profile.full_name) {
       label = profile.full_name.split(" ")[0];
       initial = profile.full_name.charAt(0).toUpperCase();
+    }
+    if (profile && (profile.role === "admin" || profile.role === "staff")) {
+      const adminEl = document.getElementById("navAdmin");
+      if (adminEl) adminEl.style.display = "inline-flex";
     }
   }
   const nameEl = document.getElementById("navAccountName");

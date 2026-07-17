@@ -7,6 +7,9 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0f2740">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
 --navy:#0f2740; --blue:#1c6dd0; --blue-dark:#154f97; --amber:#f5a623; --green:#1c9c63;
@@ -15,19 +18,24 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.6;min-height:100vh}
+h1,h2,.brand{font-family:"Sora",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;letter-spacing:-.01em}
 .wrap{max-width:620px;margin:0 auto;padding:0 24px}
 a{color:inherit}
 header{background:rgba(247,249,252,.9);backdrop-filter:blur(6px);position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border)}
-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1080px;margin:0 auto}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1080px;margin:0 auto;gap:14px}
 .brand{font-weight:800;font-size:19px;color:var(--navy);text-decoration:none;display:flex;align-items:center;gap:8px}
 .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);display:inline-block}
 .brand span{color:var(--blue)}
+.nav-right{display:flex;align-items:center;gap:18px}
 .back{font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s}
 .back:hover{color:var(--blue)}
+.nav-admin{display:none;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--blue-dark);text-decoration:none;background:#eaf1fb;padding:7px 13px;border-radius:9px}
+.nav-admin:hover{background:#dbe8fb}
+.nav-admin svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 .hero-strip{background:linear-gradient(135deg,var(--navy) 0%,#123258 100%);padding:46px 0 74px;text-align:center;color:#fff}
 .hero-strip .eyebrow{display:inline-block;background:rgba(255,255,255,.12);color:#cfe0f5;font-weight:700;font-size:12.5px;padding:5px 13px;border-radius:999px;margin-bottom:14px;letter-spacing:.02em}
-.hero-strip h1{font-size:26px;margin-bottom:6px}
+.hero-strip h1{font-size:26px;margin-bottom:6px;color:#fff}
 .hero-strip p{color:#b9cbe0;font-size:14.5px}
 
 main{padding:0 0 90px}
@@ -42,7 +50,8 @@ main{padding:0 0 90px}
 form{display:flex;flex-direction:column;gap:15px}
 label{font-size:12.5px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.02em;display:block;margin-bottom:6px}
 .field{position:relative}
-.field .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.55}
+.field .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.55;display:flex}
+.field .ic svg{width:15px;height:15px;stroke:var(--navy);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 input{width:100%;padding:12px 13px 12px 36px;border:1.5px solid var(--border);border-radius:10px;font-size:14.5px;font-family:inherit;transition:border-color .15s,box-shadow .15s;background:#fbfcfe}
 input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(28,109,208,.10);background:#fff}
 h1{font-size:24px;color:var(--navy);margin-bottom:4px}
@@ -82,7 +91,7 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
 .chat-input input{flex:1;border-radius:999px;padding:11px 16px}
 .chat-input .btn{border-radius:999px;padding:11px 20px}
 .empty{color:var(--muted);font-size:13.5px;text-align:center;padding:40px 0}
-.empty .big{font-size:26px;display:block;margin-bottom:8px}
+.empty .big{display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:#c7d3e0}
 </style>
 </head>
 <body>
@@ -90,7 +99,10 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
 <header>
 <nav>
 <a class="brand" href="/"><span class="dot"></span>Shin-Huei <span>AI</span></a>
-<a href="/" class="back">← Back to site</a>
+<div class="nav-right">
+  <a href="/admin.html" class="nav-admin" id="navAdmin"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6.5.9-4.7 4.6 1.1 6.5-5.9-3.1-5.9 3.1 1.1-6.5-4.7-4.6L9 2z"/></svg>Admin dashboard</a>
+  <a href="/" class="back">← Back to site</a>
+</div>
 </nav>
 </header>
 
@@ -117,11 +129,11 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
       <form id="loginFormEl">
         <div>
           <label>Email</label>
-          <div class="field"><span class="ic">✉️</span><input type="email" id="loginEmail" required></div>
+          <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><input type="email" id="loginEmail" required></div>
         </div>
         <div>
           <label>Password</label>
-          <div class="field"><span class="ic">🔒</span><input type="password" id="loginPassword" required></div>
+          <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span><input type="password" id="loginPassword" required></div>
         </div>
         <button class="btn btn-primary" type="submit">Log In</button>
         <div id="loginMsg"></div>
@@ -134,15 +146,15 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
       <form id="signupFormEl">
         <div>
           <label>Full name</label>
-          <div class="field"><span class="ic">🙂</span><input type="text" id="signupName" required></div>
+          <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span><input type="text" id="signupName" required></div>
         </div>
         <div>
           <label>Email</label>
-          <div class="field"><span class="ic">✉️</span><input type="email" id="signupEmail" required></div>
+          <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><input type="email" id="signupEmail" required></div>
         </div>
         <div>
           <label>Password</label>
-          <div class="field"><span class="ic">🔒</span><input type="password" id="signupPassword" minlength="6" required></div>
+          <div class="field"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span><input type="password" id="signupPassword" minlength="6" required></div>
         </div>
         <button class="btn btn-primary" type="submit">Create Account</button>
         <div id="signupMsg"></div>
@@ -170,7 +182,7 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
       <div class="chat-label"><span class="pulse"></span> Live chat with our team</div>
       <p class="sub" style="margin-top:4px;margin-bottom:0">Send a message and someone from our team will reply here.</p>
       <div class="chat">
-        <div class="chat-log" id="chatLog"><div class="empty"><span class="big">👋</span>No messages yet — say hello!</div></div>
+        <div class="chat-log" id="chatLog"><div class="empty"><span class="big"><svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.8 7.6 8.5 8.5 0 01-7.6-.4L3 21l1.9-5.7a8.38 8.38 0 01-.4-3.8 8.5 8.5 0 017.6-7.6 8.38 8.38 0 018.5 5.9c.2.68.3 1.39.3 2.1z"/></svg></span>No messages yet — say hello!</div></div>
         <div class="chat-input">
           <input type="text" id="chatInput" placeholder="Type a message…">
           <button class="btn btn-primary" id="chatSendBtn">Send</button>
@@ -185,6 +197,9 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
 <script src="supabase-config.js"></script>
 <script src="supabase-client.js"></script>
 <script>
+const ICON_WARN = '<svg width="15" height="15" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>';
+const ICON_CHECK = '<svg width="15" height="15" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>';
+
 // ---- Tabs ----
 document.querySelectorAll(".tab").forEach(t => {
   t.addEventListener("click", () => {
@@ -205,10 +220,10 @@ document.getElementById("signupFormEl").addEventListener("submit", async (e) => 
   msgEl.innerHTML = "";
   const { error } = await dlbSignUp(email, password, name);
   if (error) {
-    msgEl.innerHTML = `<div class="msg error">⚠️ ${error.message}</div>`;
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}${error.message}</div>`;
     return;
   }
-  msgEl.innerHTML = `<div class="msg ok">✅ Account created! Check your email to confirm, then log in.</div>`;
+  msgEl.innerHTML = `<div class="msg ok">${ICON_CHECK}Account created! Check your email to confirm, then log in.</div>`;
 });
 
 // ---- Log in ----
@@ -220,7 +235,7 @@ document.getElementById("loginFormEl").addEventListener("submit", async (e) => {
   msgEl.innerHTML = "";
   const { error } = await dlbSignIn(email, password);
   if (error) {
-    msgEl.innerHTML = `<div class="msg error">⚠️ ${error.message}</div>`;
+    msgEl.innerHTML = `<div class="msg error">${ICON_WARN}${error.message}</div>`;
     return;
   }
   await showLoggedIn();
@@ -281,6 +296,8 @@ async function showLoggedIn() {
   document.getElementById("hiEmail").textContent = myProfile.email;
   document.getElementById("hiAvatar").textContent = initials(displayName);
   document.getElementById("hiRole").textContent = myProfile.role || "customer";
+  const adminLink = document.getElementById("navAdmin");
+  if (adminLink) adminLink.style.display = (myProfile.role === "admin" || myProfile.role === "staff") ? "inline-flex" : "none";
 
   const msgs = await dlbGetMessages(myProfile.id);
   if (msgs.length) {

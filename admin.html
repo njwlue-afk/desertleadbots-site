@@ -7,6 +7,9 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0f2740">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
 --navy:#0f2740; --blue:#1c6dd0; --blue-dark:#154f97; --amber:#f5a623; --green:#1c9c63; --red:#c0392b;
@@ -15,11 +18,15 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.5}
+h1,h2,.brand{font-family:"Sora",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;letter-spacing:-.01em}
 a{color:inherit}
 header{background:linear-gradient(135deg,var(--navy) 0%,#123258 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 18px rgba(15,39,64,.18)}
 .brand{font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px}
 .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);display:inline-block}
 .brand span{color:var(--amber)}
+.back-site{font-size:13px;font-weight:600;color:#cfe0f5;text-decoration:none;display:flex;align-items:center;gap:5px;margin-left:18px}
+.back-site:hover{color:#fff}
+header .left{display:flex;align-items:center}
 header .right{display:flex;align-items:center;gap:14px;font-size:13.5px}
 .who-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 12px 6px 6px;border-radius:999px}
 .who-chip .av{width:24px;height:24px;border-radius:50%;background:var(--amber);color:var(--navy);font-weight:800;font-size:10.5px;display:flex;align-items:center;justify-content:center}
@@ -65,7 +72,7 @@ header .right{display:flex;align-items:center;gap:14px;font-size:13.5px}
 .search-box{position:relative}
 .search-box input{padding:8px 12px 8px 30px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;width:180px;background:var(--bg)}
 .search-box input:focus{outline:none;border-color:var(--blue);background:#fff}
-.search-box .ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.6}
+.search-box .ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);opacity:.6;display:flex}
 
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;background:var(--bg)}
@@ -102,7 +109,7 @@ tr.selected td{background:#eaf1fb !important}
 .chat-input input:focus{outline:none;border-color:var(--blue)}
 .chat-input .btn{border-radius:999px;padding:10px 18px}
 .empty{color:var(--muted);font-size:13.5px;text-align:center;padding:60px 0}
-.empty .big{font-size:28px;display:block;margin-bottom:10px}
+.empty .big{display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:#c7d3e0}
 
 @media(max-width:900px){
   .stats{flex-direction:column}
@@ -113,7 +120,10 @@ tr.selected td{background:#eaf1fb !important}
 <body>
 
 <header>
-<div class="brand"><span class="dot"></span>Desert Lead Bots <span>Admin</span></div>
+<div class="left">
+  <div class="brand"><span class="dot"></span>Desert Lead Bots <span>Admin</span></div>
+  <a href="/" class="back-site">← Back to site</a>
+</div>
 <div class="right" id="headerRight" style="display:none">
   <div class="who-chip"><span class="av" id="whoAvatar">?</span><span id="whoAmI"></span></div>
   <button class="btn btn-ghost-dark" id="signOutBtn">Sign out</button>
@@ -122,7 +132,7 @@ tr.selected td{background:#eaf1fb !important}
 
 <!-- Login gate -->
 <div id="gate">
-  <div class="gate-icon">🔐</div>
+  <div class="gate-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
   <h1>Admin sign in</h1>
   <p>Sign in with your staff/admin account.</p>
   <form id="gateForm">
@@ -142,17 +152,17 @@ tr.selected td{background:#eaf1fb !important}
 <!-- Dashboard -->
 <div id="dash">
   <div class="stats">
-    <div class="stat users"><div class="icon">👥</div><div><div class="n" id="statUsers">–</div><div class="l">Registered accounts</div></div></div>
-    <div class="stat visits"><div class="icon">📍</div><div><div class="n" id="statVisits">–</div><div class="l">Visits (last 200 logged)</div></div></div>
-    <div class="stat spend"><div class="icon">💰</div><div><div class="n" id="statSpend">–</div><div class="l">Total spend tracked</div></div></div>
-    <div class="stat pending"><div class="icon">🙋</div><div><div class="n" id="statPending">–</div><div class="l">Pending human requests</div></div></div>
+    <div class="stat users"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div><div class="n" id="statUsers">–</div><div class="l">Registered accounts</div></div></div>
+    <div class="stat visits"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="n" id="statVisits">–</div><div class="l">Visits (last 200 logged)</div></div></div>
+    <div class="stat spend"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.5c0 1 1 1.8 2.5 1.8s2.5-.7 2.5-1.7c0-2.6-5-1.4-5-4 0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7M12 7v1.3M12 15.7V17"/></svg></div><div><div class="n" id="statSpend">–</div><div class="l">Total spend tracked</div></div></div>
+    <div class="stat pending"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg></div><div><div class="n" id="statPending">–</div><div class="l">Pending human requests</div></div></div>
   </div>
 
   <div class="layout">
     <div class="panel">
       <div class="panel-head">
         <h2>Accounts</h2>
-        <div class="search-box"><span class="ic">🔎</span><input type="text" id="userSearch" placeholder="Search name or email…"></div>
+        <div class="search-box"><span class="ic"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="userSearch" placeholder="Search name or email…"></div>
       </div>
       <table>
         <thead><tr><th>Name / Email</th><th>Role</th><th>Location</th><th>Spent</th><th>Last seen</th><th></th></tr></thead>
@@ -164,7 +174,7 @@ tr.selected td{background:#eaf1fb !important}
       <div class="chat-head">
         <strong id="chatWithName">Select a person to chat</strong>
       </div>
-      <div class="chat-log" id="chatLog"><div class="empty"><span class="big">💬</span>Pick someone from the list on the left.</div></div>
+      <div class="chat-log" id="chatLog"><div class="empty"><span class="big"><svg width="28" height="28" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.8 7.6 8.5 8.5 0 01-7.6-.4L3 21l1.9-5.7a8.38 8.38 0 01-.4-3.8 8.5 8.5 0 017.6-7.6 8.38 8.38 0 018.5 5.9c.2.68.3 1.39.3 2.1z"/></svg></span>Pick someone from the list on the left.</div></div>
       <div class="chat-input">
         <input type="text" id="chatInput" placeholder="Type a reply…" disabled>
         <button class="btn btn-primary" id="chatSendBtn" disabled>Send</button>
@@ -175,7 +185,7 @@ tr.selected td{background:#eaf1fb !important}
   <div class="visitor-wrap">
     <div class="panel" id="visitorPanel">
       <div class="panel-head">
-        <h2>🙋 Talk-to-a-human requests</h2>
+        <h2 style="display:flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>Talk-to-a-human requests</h2>
         <span class="sub">From the "Talk to a human" button on the site — separate from the bot widget</span>
       </div>
       <table>
@@ -190,6 +200,12 @@ tr.selected td{background:#eaf1fb !important}
 <script src="supabase-config.js"></script>
 <script src="supabase-client.js"></script>
 <script>
+const ICON_CROWN = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20l-2-9-5 4-3-8-3 8-5-4z"/></svg>';
+const ICON_WRENCH = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 10-5.4 5.4L2 19l3 3 7.3-7.3a4 4 0 005.4-5.4l-2.8 2.8-2.1-2.1z"/></svg>';
+const ICON_USER_SM = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>';
+const ICON_INBOX = '<svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>';
+const ICON_CHAT_SM = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.8 7.6 8.5 8.5 0 01-7.6-.4L3 21l1.9-5.7a8.38 8.38 0 01-.4-3.8 8.5 8.5 0 017.6-7.6 8.38 8.38 0 018.5 5.9c.2.68.3 1.39.3 2.1z"/></svg>';
+
 let me = null;
 let allProfiles = [];
 let selectedCustomerId = null;
@@ -205,9 +221,9 @@ function initials(str) {
 }
 
 function roleIcon(role) {
-  if (role === "admin") return "👑";
-  if (role === "staff") return "🛠";
-  return "👤";
+  if (role === "admin") return ICON_CROWN;
+  if (role === "staff") return ICON_WRENCH;
+  return ICON_USER_SM;
 }
 
 document.getElementById("gateForm").addEventListener("submit", async (e) => {
@@ -283,7 +299,7 @@ function updatePendingStat() {
 function renderVisitorRows() {
   const tbody = document.getElementById("visitorRows");
   if (!visitorMessages.length) {
-    tbody.innerHTML = `<tr><td colspan="5" class="empty"><span class="big">📭</span>No requests yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="empty"><span class="big">${ICON_INBOX}</span>No requests yet.</td></tr>`;
     return;
   }
   tbody.innerHTML = "";
@@ -334,7 +350,7 @@ function renderUserRows() {
     );
   }
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty"><span class="big">📭</span>${allProfiles.length ? "No matching accounts." : "No accounts yet."}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="empty"><span class="big">${ICON_INBOX}</span>${allProfiles.length ? "No matching accounts." : "No accounts yet."}</td></tr>`;
     return;
   }
   tbody.innerHTML = "";
@@ -355,7 +371,7 @@ function renderUserRows() {
       <td class="sub">${p.last_seen_at ? new Date(p.last_seen_at).toLocaleString() : "–"}</td>
       <td>
         <div class="row-actions">
-          <button class="btn btn-outline btn-small" data-chat="${p.id}">💬 Chat</button>
+          <button class="btn btn-outline btn-small" data-chat="${p.id}">${ICON_CHAT_SM} Chat</button>
           <button class="btn ${isAdmin ? "btn-outline" : "btn-amber"} btn-small" data-role="${p.id}" data-newrole="${isAdmin ? "customer" : "admin"}">
             ${isAdmin ? "Remove admin" : "Make admin"}
           </button>
