@@ -30,6 +30,9 @@
   .nav-login:hover{color:var(--blue)}
   .nav-signup{background:#eaf1fb;color:var(--blue-dark);text-decoration:none;padding:9px 16px;border-radius:9px;font-weight:700;font-size:14px}
   .nav-signup:hover{background:#dbe8fb}
+  .nav-account{display:none;align-items:center;gap:8px;background:#eaf1fb;color:var(--blue-dark);text-decoration:none;padding:7px 14px 7px 7px;border-radius:999px;font-weight:700;font-size:14px}
+  .nav-account:hover{background:#dbe8fb}
+  .nav-account .avatar{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
 
   /* Hero */
   .hero{padding:90px 0 60px;text-align:center}
@@ -142,8 +145,9 @@
       <a href="#process">How It Works</a>
     </div>
     <div class="nav-btns">
-      <a href="/account.html?tab=login" class="nav-login">Log In</a>
-      <a href="/account.html?tab=signup" class="nav-signup">Sign Up</a>
+      <a href="/account.html?tab=login" class="nav-login" id="navLogin">Log In</a>
+      <a href="/account.html?tab=signup" class="nav-signup" id="navSignup">Sign Up</a>
+      <a href="/account.html" class="nav-account" id="navAccount"><span class="avatar" id="navAccountAvatar">?</span><span id="navAccountName">Account</span></a>
       <a class="nav-cta" href="#contact">Get a Free Preview</a>
     </div>
   </nav>
@@ -379,5 +383,35 @@
 <script src="supabase-config.js"></script>
 <script src="supabase-client.js"></script>
 <script>dlbLogVisit("/");</script>
+
+<!-- Nav auth state — if a visitor is already signed in (session persists across
+     pages/visits automatically via Supabase), swap Log In / Sign Up for an
+     Account link with their name, instead of asking them to log in again. -->
+<script>
+(async function(){
+  if (typeof dlbGetSession !== "function") return;
+  const session = await dlbGetSession();
+  if (!session) return;
+  const loginEl = document.getElementById("navLogin");
+  const signupEl = document.getElementById("navSignup");
+  const accountEl = document.getElementById("navAccount");
+  if (loginEl) loginEl.style.display = "none";
+  if (signupEl) signupEl.style.display = "none";
+  if (accountEl) accountEl.style.display = "inline-flex";
+  let label = (session.user && session.user.email) ? session.user.email.split("@")[0] : "Account";
+  let initial = label.charAt(0).toUpperCase();
+  if (typeof dlbGetMyProfile === "function") {
+    const profile = await dlbGetMyProfile();
+    if (profile && profile.full_name) {
+      label = profile.full_name.split(" ")[0];
+      initial = profile.full_name.charAt(0).toUpperCase();
+    }
+  }
+  const nameEl = document.getElementById("navAccountName");
+  const avatarEl = document.getElementById("navAccountAvatar");
+  if (nameEl) nameEl.textContent = label;
+  if (avatarEl) avatarEl.textContent = initial;
+})();
+</script>
 </body>
 </html>
