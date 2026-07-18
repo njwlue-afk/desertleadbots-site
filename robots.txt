@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
-Disallow: /account.html
+Disallow: /admin/
+Disallow: /account/
 
 Sitemap: https://desertleadbots.com/sitemap.xml
