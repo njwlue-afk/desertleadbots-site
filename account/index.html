@@ -112,7 +112,7 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
 <nav>
 <a class="brand" href="/"><span class="dot"></span>Shin-Huei <span>AI</span></a>
 <div class="nav-right">
-  <a href="/admin.html" class="nav-admin" id="navAdmin"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6.5.9-4.7 4.6 1.1 6.5-5.9-3.1-5.9 3.1 1.1-6.5-4.7-4.6L9 2z"/></svg>Admin dashboard</a>
+  <a href="/admin/" class="nav-admin" id="navAdmin"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6.5.9-4.7 4.6 1.1 6.5-5.9-3.1-5.9 3.1 1.1-6.5-4.7-4.6L9 2z"/></svg>Admin dashboard</a>
   <a href="/" class="back">← Back to site</a>
 </div>
 </nav>
@@ -584,12 +584,12 @@ async function handleCheckoutParams() {
     document.getElementById("checkoutSuccessText").textContent =
       " Payment received — thank you! If you haven't already, tell us your website below so we know where to install your bot.";
     // Clean the URL so a refresh doesn't re-show this.
-    window.history.replaceState({}, "", "account.html");
+    window.history.replaceState({}, "", "/account/");
     return;
   }
 
   if (nextPlan && ["starter", "most_common", "maintenance"].includes(nextPlan)) {
-    window.history.replaceState({}, "", "account.html");
+    window.history.replaceState({}, "", "/account/");
     await dlbStartCheckout(nextPlan);
   }
 }
@@ -602,7 +602,7 @@ async function handleCheckoutParams() {
     document.querySelector('.tab[data-tab="signup"]').click();
   }
 
-  await dlbLogVisit("/account.html");
+  await dlbLogVisit("/account/");
   const session = await dlbGetSession();
   if (session) {
     await showLoggedIn();
