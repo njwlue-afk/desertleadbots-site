@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Desert Lead Bots</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f2740">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--navy:#0f2740; --blue:#1c6dd0; --blue-dark:#154f97; --amber:#f5a623; --green:#1c9c63; --red:#c0392b;
+--bg:#f7f9fc; --text:#1c2733; --muted:#5b6b7b; --white:#ffffff; --border:#e3e9f0;
+--radius:16px; --shadow:0 10px 34px rgba(15,39,64,.10); --shadow-lg:0 18px 46px rgba(15,39,64,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.5}
+h1,h2,.brand{font-family:"Sora",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;letter-spacing:-.01em}
+a{color:inherit}
+header{background:linear-gradient(135deg,var(--navy) 0%,#123258 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 18px rgba(15,39,64,.18)}
+.brand{font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);display:inline-block}
+.brand span{color:var(--amber)}
+.back-site{font-size:13px;font-weight:600;color:#cfe0f5;text-decoration:none;display:flex;align-items:center;gap:5px;margin-left:18px}
+.back-site:hover{color:#fff}
+header .left{display:flex;align-items:center}
+header .right{display:flex;align-items:center;gap:14px;font-size:13.5px}
+.who-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 12px 6px 6px;border-radius:999px}
+.who-chip .av{width:24px;height:24px;border-radius:50%;background:var(--amber);color:var(--navy);font-weight:800;font-size:10.5px;display:flex;align-items:center;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;padding:9px 16px;border-radius:9px;font-size:13.5px;border:none;cursor:pointer;font-family:inherit;transition:transform .12s,box-shadow .12s,background .15s}
+.btn-primary{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);color:#fff;box-shadow:0 6px 16px rgba(28,109,208,.28)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-ghost-dark{background:rgba(255,255,255,.12);color:#fff}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.2)}
+.btn-small{padding:6px 11px;font-size:12px;border-radius:7px}
+.btn-amber{background:var(--amber);color:var(--navy)}
+.btn-outline{background:#fff;border:1.5px solid var(--border);color:var(--navy)}
+.btn-outline:hover{border-color:#c7d3e0}
+
+#gate{max-width:420px;margin:70px auto;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:36px;box-shadow:var(--shadow-lg);animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.gate-icon{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:0 8px 20px rgba(15,39,64,.25)}
+#gate h1{font-size:22px;color:var(--navy);margin-bottom:6px}
+#gate p{color:var(--muted);font-size:14px;margin-bottom:24px}
+#gate form{display:flex;flex-direction:column;gap:13px}
+#gate label{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.02em;display:block;margin-bottom:5px}
+#gate input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:inherit;background:#fbfcfe;transition:border-color .15s,box-shadow .15s}
+#gate input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(28,109,208,.10);background:#fff}
+.msg{font-size:13.5px;padding:10px 12px;border-radius:9px;margin-top:2px}
+.msg.error{background:#fdecec;color:#a8321f}
+.msg.ok{background:#e9f8ef;color:#146c43}
+
+#dash{display:none}
+.stats{display:flex;gap:18px;padding:26px 28px 0;max-width:1280px;margin:0 auto}
+.stat{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 22px;flex:1;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px}
+.stat .icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.stat.users .icon{background:#eaf1fb;color:var(--blue-dark)}
+.stat.visits .icon{background:#fdf3e0;color:#a06a00}
+.stat.spend .icon{background:#e9f8ef;color:#146c43}
+.stat .n{font-size:24px;font-weight:800;color:var(--navy);line-height:1.1}
+.stat .l{font-size:12px;color:var(--muted);font-weight:600}
+
+.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;padding:20px 28px 40px;align-items:start;max-width:1280px;margin:0 auto}
+.visitor-wrap{padding:0 28px 40px;max-width:1280px;margin:0 auto}
+.stat.pending .icon{background:#fde9e9;color:var(--red)}
+.panel{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border);gap:12px}
+.panel-head h2{font-size:15px;color:var(--navy)}
+.search-box{position:relative}
+.search-box input{padding:8px 12px 8px 30px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;width:180px;background:var(--bg)}
+.search-box input:focus{outline:none;border-color:var(--blue);background:#fff}
+.search-box .ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);opacity:.6;display:flex}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;background:var(--bg)}
+td{padding:11px 14px;border-top:1px solid var(--border);vertical-align:middle}
+tbody tr{transition:background .12s}
+tbody tr:hover td{background:#fafbfd}
+tr.selected td{background:#eaf1fb !important}
+.row-user{display:flex;align-items:center;gap:10px}
+.row-avatar{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--navy);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.row-avatar.admin{background:linear-gradient(135deg,#f5a623,#c0392b);color:#fff}
+.row-avatar.staff{background:linear-gradient(135deg,#f5a623,#a06a00);color:#fff}
+.row-avatar.customer{background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff}
+.name{font-weight:700;color:var(--navy)}
+.sub{color:var(--muted);font-size:12px}
+.badge{font-size:10.5px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:999px;letter-spacing:.03em;display:inline-flex;align-items:center;gap:3px}
+.badge.customer{background:#eaf1fb;color:var(--blue-dark)}
+.badge.staff{background:#fdf3e0;color:#a06a00}
+.badge.admin{background:#fde9e9;color:var(--red)}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+#chatPanel .chat-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+#chatPanel .chat-head .row-avatar{width:30px;height:30px}
+.chat-log{height:420px;overflow-y:auto;padding:16px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
+.bubble-row{display:flex;gap:8px;align-items:flex-end}
+.bubble-row.mine{flex-direction:row-reverse}
+.mini-avatar{width:24px;height:24px;border-radius:50%;background:var(--border);color:var(--navy);font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bubble-row.mine .mini-avatar{background:var(--blue);color:#fff}
+.bubble{max-width:74%;padding:9px 13px;border-radius:13px;font-size:13.5px}
+.bubble.mine{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.bubble.theirs{background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px}
+.bubble .who{font-size:10px;opacity:.75;margin-bottom:2px;font-weight:700;text-transform:uppercase}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);background:#fff}
+.chat-input input{flex:1;padding:10px 15px;border:1.5px solid var(--border);border-radius:999px;font-size:13.5px;font-family:inherit}
+.chat-input input:focus{outline:none;border-color:var(--blue)}
+.chat-input .btn{border-radius:999px;padding:10px 18px}
+.empty{color:var(--muted);font-size:13.5px;text-align:center;padding:60px 0}
+.empty .big{display:flex;align-items:center;justify-content:center;margin-bottom:10px;color:#c7d3e0}
+
+@media(max-width:900px){
+  .stats{flex-direction:column}
+  .layout{grid-template-columns:1fr}
+}
+
+@media(max-width:480px){
+  header{padding:14px 16px;flex-wrap:wrap;gap:8px}
+  .brand{font-size:15px}
+  .back-site{margin-left:0}
+  header .right{font-size:12.5px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="left">
+  <div class="brand"><span class="dot"></span>Desert Lead Bots <span>Admin</span></div>
+  <a href="/" class="back-site">← Back to site</a>
+</div>
+<div class="right" id="headerRight" style="display:none">
+  <div class="who-chip"><span class="av" id="whoAvatar">?</span><span id="whoAmI"></span></div>
+  <button class="btn btn-ghost-dark" id="signOutBtn">Sign out</button>
+</div>
+</header>
+
+<!-- Login gate -->
+<div id="gate">
+  <div class="gate-icon"><svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+  <h1>Admin sign in</h1>
+  <p>Sign in with your staff/admin account.</p>
+  <form id="gateForm">
+    <div>
+      <label>Email</label>
+      <input type="email" id="gateEmail" required>
+    </div>
+    <div>
+      <label>Password</label>
+      <input type="password" id="gatePassword" required>
+    </div>
+    <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center;margin-top:4px">Sign In</button>
+    <div id="gateMsg"></div>
+  </form>
+</div>
+
+<!-- Dashboard -->
+<div id="dash">
+  <div class="stats">
+    <div class="stat users"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div><div class="n" id="statUsers">–</div><div class="l">Registered accounts</div></div></div>
+    <div class="stat visits"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="n" id="statVisits">–</div><div class="l">Visits (last 200 logged)</div></div></div>
+    <div class="stat spend"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.5c0 1 1 1.8 2.5 1.8s2.5-.7 2.5-1.7c0-2.6-5-1.4-5-4 0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7M12 7v1.3M12 15.7V17"/></svg></div><div><div class="n" id="statSpend">–</div><div class="l">Total spend tracked</div></div></div>
+    <div class="stat pending"><div class="icon"><svg width="21" height="21" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg></div><div><div class="n" id="statPending">–</div><div class="l">Pending human requests</div></div></div>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Accounts</h2>
+        <div class="search-box"><span class="ic"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="userSearch" placeholder="Search name or email…"></div>
+      </div>
+      <table>
+        <thead><tr><th>Name / Email</th><th>Role</th><th>Location</th><th>Spent</th><th>Last seen</th><th></th></tr></thead>
+        <tbody id="userRows"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="chatPanel">
+      <div class="chat-head">
+        <strong id="chatWithName">Select a person to chat</strong>
+      </div>
+      <div class="chat-log" id="chatLog"><div class="empty"><span class="big"><svg width="28" height="28" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.8 7.6 8.5 8.5 0 01-7.6-.4L3 21l1.9-5.7a8.38 8.38 0 01-.4-3.8 8.5 8.5 0 017.6-7.6 8.38 8.38 0 018.5 5.9c.2.68.3 1.39.3 2.1z"/></svg></span>Pick someone from the list on the left.</div></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type a reply…" disabled>
+        <button class="btn btn-primary" id="chatSendBtn" disabled>Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="visitor-wrap">
+    <div class="panel" id="visitorPanel">
+      <div class="panel-head">
+        <h2 style="display:flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>Talk-to-a-human requests</h2>
+        <span class="sub">From the "Talk to a human" button on the site — separate from the bot widget</span>
+      </div>
+      <table>
+        <thead><tr><th>From</th><th>Message</th><th>Page</th><th>When</th><th></th></tr></thead>
+        <tbody id="visitorRows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="panel" id="guestPanel" style="margin-top:20px">
+      <div class="panel-head">
+        <h2 style="display:flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg>Guest visitors</h2>
+        <div class="search-box"><span class="ic"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="text" id="guestSearch" placeholder="Search city or state…"></div>
+      </div>
+      <div class="sub" style="padding:0 18px 14px">People who visited but haven't signed up, grouped by browser session. Location is a best-effort lookup from their browser, not exact — and there's no name or contact info here unless they also used "Talk to a human" above.</div>
+      <table>
+        <thead><tr><th>Guest</th><th>Location</th><th>Pages visited</th><th>Last seen</th></tr></thead>
+        <tbody id="guestRows"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="supabase-client.js"></script>
+<script>
+const ICON_CROWN = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20l-2-9-5 4-3-8-3 8-5-4z"/></svg>';
+const ICON_WRENCH = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 10-5.4 5.4L2 19l3 3 7.3-7.3a4 4 0 005.4-5.4l-2.8 2.8-2.1-2.1z"/></svg>';
+const ICON_USER_SM = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>';
+const ICON_INBOX = '<svg width="26" height="26" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>';
+const ICON_CHAT_SM = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-4.8 7.6 8.5 8.5 0 01-7.6-.4L3 21l1.9-5.7a8.38 8.38 0 01-.4-3.8 8.5 8.5 0 017.6-7.6 8.38 8.38 0 018.5 5.9c.2.68.3 1.39.3 2.1z"/></svg>';
+const ICON_BOT = '<svg width="13" height="13" viewBox="0 0 24 24" style="vertical-align:-2px" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none"/><path d="M12 8V4M9 4h6"/></svg>';
+const ICON_GLOBE = '<svg width="11" height="11" viewBox="0 0 24 24" style="vertical-align:-1px" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20 15.3 15.3 0 010-20z"/></svg>';
+
+let me = null;
+let allProfiles = [];
+let selectedCustomerId = null;
+let chatChannel = null;
+let searchTerm = "";
+let visitorMessages = [];
+let visitorChannel = null;
+let allVisits = [];
+let guestSearchTerm = "";
+
+function initials(str) {
+  if (!str) return "?";
+  const parts = str.trim().split(/\s+/);
+  return ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase() || str[0].toUpperCase();
+}
+
+function roleIcon(role) {
+  if (role === "admin") return ICON_CROWN;
+  if (role === "staff") return ICON_WRENCH;
+  return ICON_USER_SM;
+}
+
+document.getElementById("gateForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("gateEmail").value;
+  const password = document.getElementById("gatePassword").value;
+  const msgEl = document.getElementById("gateMsg");
+  msgEl.innerHTML = "";
+  const { error } = await dlbSignIn(email, password);
+  if (error) {
+    msgEl.innerHTML = `<div class="msg error">⚠️ ${error.message}</div>`;
+    return;
+  }
+  await checkAccess();
+});
+
+document.getElementById("signOutBtn").addEventListener("click", async () => {
+  await dlbSignOut();
+  window.location.reload();
+});
+
+async function checkAccess() {
+  const profile = await dlbGetMyProfile();
+  if (!profile || (profile.role !== "admin" && profile.role !== "staff")) {
+    document.getElementById("gateMsg").innerHTML =
+      `<div class="msg error">⚠️ That account doesn't have staff/admin access.</div>`;
+    return;
+  }
+  me = profile;
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("dash").style.display = "block";
+  document.getElementById("headerRight").style.display = "flex";
+  const label = me.full_name || me.email;
+  document.getElementById("whoAmI").textContent = label;
+  document.getElementById("whoAvatar").textContent = initials(label);
+  await loadDashboard();
+}
+
+async function loadDashboard() {
+  allProfiles = await dlbGetAllProfiles();
+  allVisits = await dlbGetVisits(200);
+  visitorMessages = await dlbGetVisitorMessages(200);
+
+  document.getElementById("statUsers").textContent = allProfiles.length;
+  document.getElementById("statVisits").textContent = allVisits.length;
+  const totalSpent = allProfiles.reduce((sum, p) => sum + (p.total_spent_cents || 0), 0);
+  document.getElementById("statSpend").textContent = "$" + (totalSpent / 100).toFixed(2);
+  updatePendingStat();
+
+  renderUserRows();
+  renderVisitorRows();
+  renderGuestRows();
+
+  if (!chatChannel) {
+    chatChannel = dlbSubscribeToAllMessages((m) => {
+      if (m.customer_id === selectedCustomerId) renderChatMessage(m);
+    });
+  }
+
+  if (!visitorChannel) {
+    visitorChannel = dlbSubscribeToVisitorMessages((v) => {
+      visitorMessages.unshift(v);
+      renderVisitorRows();
+      updatePendingStat();
+    });
+  }
+}
+
+function updatePendingStat() {
+  const pending = visitorMessages.filter((v) => !v.resolved).length;
+  document.getElementById("statPending").textContent = pending;
+}
+
+function renderVisitorRows() {
+  const tbody = document.getElementById("visitorRows");
+  if (!visitorMessages.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty"><span class="big">${ICON_INBOX}</span>No requests yet.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = "";
+  visitorMessages.forEach((v) => {
+    const tr = document.createElement("tr");
+    if (v.resolved) tr.style.opacity = "0.55";
+    const who = (v.name || v.contact) ? [v.name, v.contact].filter(Boolean).join(" · ") : "Anonymous visitor";
+    tr.innerHTML = `
+      <td><div class="name">${who}</div></td>
+      <td class="sub" style="max-width:320px">${(v.message || "").replace(/</g, "&lt;")}</td>
+      <td class="sub">${v.page || "–"}</td>
+      <td class="sub">${v.created_at ? new Date(v.created_at).toLocaleString() : "–"}</td>
+      <td>
+        <button class="btn ${v.resolved ? "btn-outline" : "btn-amber"} btn-small" data-resolve="${v.id}" data-newresolved="${v.resolved ? "false" : "true"}">
+          ${v.resolved ? "Reopen" : "Mark resolved"}
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll("[data-resolve]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.resolve;
+      const newResolved = btn.dataset.newresolved === "true";
+      await dlbMarkVisitorMessageResolved(id, newResolved);
+      const item = visitorMessages.find((v) => v.id === id);
+      if (item) item.resolved = newResolved;
+      renderVisitorRows();
+      updatePendingStat();
+    });
+  });
+}
+
+function locationLabel(p) {
+  const parts = [p.city, p.region, p.country].filter(Boolean);
+  return parts.length ? parts.join(", ") : "Unknown";
+}
+
+// Anonymous (not-signed-up) visits, collapsed to one row per browser session —
+// shows where guests are coming from without ever needing a name or contact
+// info. Not directly messageable; that only exists once someone submits the
+// "Talk to a human" form or creates an account.
+function renderGuestRows() {
+  const tbody = document.getElementById("guestRows");
+  const anon = allVisits.filter((v) => !v.user_id);
+
+  const latestBySession = new Map();
+  const countBySession = {};
+  anon.forEach((v) => {
+    countBySession[v.session_id] = (countBySession[v.session_id] || 0) + 1;
+    const existing = latestBySession.get(v.session_id);
+    if (!existing || new Date(v.created_at) > new Date(existing.created_at)) {
+      latestBySession.set(v.session_id, v);
+    }
+  });
+
+  let list = Array.from(latestBySession.values());
+  if (guestSearchTerm) {
+    const q = guestSearchTerm.toLowerCase();
+    list = list.filter((v) => locationLabel(v).toLowerCase().includes(q));
+  }
+  list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty"><span class="big">${ICON_INBOX}</span>${anon.length ? "No matching guests." : "No guest visits logged yet."}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = "";
+  list.forEach((v) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><span class="badge customer" style="opacity:.8">${ICON_USER_SM} Guest</span></td>
+      <td>${locationLabel(v)}</td>
+      <td class="sub">${countBySession[v.session_id]}</td>
+      <td class="sub">${v.created_at ? new Date(v.created_at).toLocaleString() : "–"}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderUserRows() {
+  const tbody = document.getElementById("userRows");
+  let list = allProfiles;
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = allProfiles.filter(p =>
+      (p.full_name || "").toLowerCase().includes(q) ||
+      (p.email || "").toLowerCase().includes(q)
+    );
+  }
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty"><span class="big">${ICON_INBOX}</span>${allProfiles.length ? "No matching accounts." : "No accounts yet."}</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = "";
+  list.forEach((p) => {
+    const tr = document.createElement("tr");
+    if (p.id === selectedCustomerId) tr.classList.add("selected");
+    const isAdmin = p.role === "admin";
+    tr.innerHTML = `
+      <td>
+        <div class="row-user">
+          <div class="row-avatar ${p.role}">${initials(p.full_name || p.email)}</div>
+          <div>
+            <div class="name">${p.full_name || "(no name)"}</div>
+            <div class="sub">${p.email}</div>
+            ${p.website_url ? `<div class="sub"><a href="${p.website_url}" target="_blank" rel="noopener" style="color:var(--blue-dark)">${ICON_GLOBE} ${p.website_url.replace(/^https?:\/\//, "")}</a></div>` : ""}
+          </div>
+        </div>
+      </td>
+      <td><span class="badge ${p.role}">${roleIcon(p.role)} ${p.role}</span></td>
+      <td>${locationLabel(p)}</td>
+      <td>$${((p.total_spent_cents || 0) / 100).toFixed(2)}</td>
+      <td class="sub">${p.last_seen_at ? new Date(p.last_seen_at).toLocaleString() : "–"}</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn btn-outline btn-small" data-chat="${p.id}">${ICON_CHAT_SM} Chat</button>
+          <button class="btn ${p.chatbot_agent_id ? "btn-outline" : "btn-amber"} btn-small" data-bot="${p.id}" data-current="${p.chatbot_agent_id || ""}">
+            ${ICON_BOT} ${p.chatbot_agent_id ? "Edit bot ID" : "Set bot ID"}
+          </button>
+          <button class="btn ${isAdmin ? "btn-outline" : "btn-amber"} btn-small" data-role="${p.id}" data-newrole="${isAdmin ? "customer" : "admin"}">
+            ${isAdmin ? "Remove admin" : "Make admin"}
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll("[data-chat]").forEach((btn) => {
+    btn.addEventListener("click", () => openChat(btn.dataset.chat));
+  });
+  tbody.querySelectorAll("[data-bot]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const current = btn.dataset.current || "";
+      const agentId = prompt("Chatbase agent ID for this customer's bot (leave blank to clear):", current);
+      if (agentId === null) return; // cancelled
+      await dlbSetChatbotAgentId(btn.dataset.bot, agentId.trim());
+      await loadDashboard();
+    });
+  });
+  tbody.querySelectorAll("[data-role]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const ok = confirm(`Change this account's role to "${btn.dataset.newrole}"?`);
+      if (!ok) return;
+      await dlbSetRole(btn.dataset.role, btn.dataset.newrole);
+      await loadDashboard();
+    });
+  });
+}
+
+document.getElementById("userSearch").addEventListener("input", (e) => {
+  searchTerm = e.target.value;
+  renderUserRows();
+});
+
+document.getElementById("guestSearch").addEventListener("input", (e) => {
+  guestSearchTerm = e.target.value;
+  renderGuestRows();
+});
+
+async function openChat(customerId) {
+  selectedCustomerId = customerId;
+  const customer = allProfiles.find((p) => p.id === customerId);
+  document.getElementById("chatWithName").innerHTML =
+    `<div class="row-user"><div class="row-avatar ${customer.role}">${initials(customer.full_name || customer.email)}</div><span>${customer.full_name || customer.email}</span></div>`;
+  document.getElementById("chatInput").disabled = false;
+  document.getElementById("chatSendBtn").disabled = false;
+  renderUserRows();
+
+  const log = document.getElementById("chatLog");
+  log.innerHTML = `<div class="empty">Loading messages…</div>`;
+  const msgs = await dlbGetMessages(customerId);
+  log.innerHTML = "";
+  if (!msgs.length) {
+    log.innerHTML = `<div class="empty"><span class="big">👋</span>No messages yet.</div>`;
+  } else {
+    msgs.forEach(renderChatMessage);
+  }
+}
+
+function renderChatMessage(m) {
+  if (m.customer_id !== selectedCustomerId) return;
+  const log = document.getElementById("chatLog");
+  const emptyEl = log.querySelector(".empty");
+  if (emptyEl) emptyEl.remove();
+  const mine = m.sender_id === me.id;
+  const row = document.createElement("div");
+  row.className = "bubble-row " + (mine ? "mine" : "theirs");
+  const av = mine ? initials(me.full_name || me.email) : "C";
+  row.innerHTML = `
+    <div class="mini-avatar">${av}</div>
+    <div class="bubble ${mine ? "mine" : "theirs"}">
+      <div class="who">${mine ? "You" : "Customer"}</div>${m.body.replace(/</g, "&lt;")}
+    </div>`;
+  log.appendChild(row);
+  log.scrollTop = log.scrollHeight;
+}
+
+document.getElementById("chatSendBtn").addEventListener("click", sendReply);
+document.getElementById("chatInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendReply();
+});
+
+async function sendReply() {
+  if (!selectedCustomerId) return;
+  const input = document.getElementById("chatInput");
+  const body = input.value.trim();
+  if (!body) return;
+  input.value = "";
+  await dlbSendMessage(selectedCustomerId, me.id, body);
+}
+
+// ---- Init ----
+(async () => {
+  const session = await dlbGetSession();
+  if (session) await checkAccess();
+})();
+</script>
+</body>
+</html>
