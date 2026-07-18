@@ -26,6 +26,15 @@ async function dlbSignIn(email, password) {
   return { data, error };
 }
 
+async function dlbSignInWithGoogle(redirectTo) {
+  if (!DLB_CONFIGURED) return { error: { message: "Accounts aren't set up yet." } };
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: redirectTo || window.location.href },
+  });
+  return { error };
+}
+
 async function dlbSignOut() {
   if (!DLB_CONFIGURED) return;
   await sb.auth.signOut();

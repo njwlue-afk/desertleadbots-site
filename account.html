@@ -62,6 +62,10 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
 .btn-primary:active{transform:translateY(0)}
 .btn-ghost{background:#fff;color:var(--navy);border:1.5px solid var(--border)}
 .btn-ghost:hover{border-color:#c7d3e0}
+.btn-google{background:#fff;color:var(--navy);border:1.5px solid var(--border);width:100%;gap:10px}
+.btn-google:hover{background:#f7f9fc;border-color:#c7d3e0}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:12.5px}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--border)}
 .msg{font-size:13.5px;padding:11px 13px;border-radius:9px;margin-top:2px;display:flex;align-items:flex-start;gap:8px}
 .msg.error{background:#fdecec;color:#a8321f}
 .msg.ok{background:#e9f8ef;color:#146c43}
@@ -134,6 +138,8 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
     <div id="loginForm">
       <h1>Welcome back</h1>
       <p class="sub">Log in to message us and track your project.</p>
+      <button class="btn btn-google" type="button" id="googleLoginBtn"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Continue with Google</button>
+      <div class="auth-divider">or log in with email</div>
       <form id="loginFormEl">
         <div>
           <label>Email</label>
@@ -151,6 +157,8 @@ h1{font-size:24px;color:var(--navy);margin-bottom:4px}
     <div id="signupForm" style="display:none">
       <h1>Create your account</h1>
       <p class="sub">Set up an account to chat with us directly and track your order.</p>
+      <button class="btn btn-google" type="button" id="googleSignupBtn"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Continue with Google</button>
+      <div class="auth-divider">or sign up with email</div>
       <form id="signupFormEl">
         <div>
           <label>Full name</label>
@@ -321,6 +329,19 @@ document.getElementById("loginFormEl").addEventListener("submit", async (e) => {
   await showLoggedIn();
   await handleCheckoutParams();
 });
+
+// ---- Google sign-in ----
+async function startGoogleAuth() {
+  const url = new URL(window.location.href);
+  url.search = window.location.search; // preserve ?next=plan / ?tab=signup across the OAuth round trip
+  const { error } = await dlbSignInWithGoogle(url.toString());
+  if (error) {
+    const msgEl = document.getElementById(document.getElementById("signupForm").style.display === "none" ? "loginMsg" : "signupMsg");
+    if (msgEl) msgEl.innerHTML = `<div class="msg error">${ICON_WARN}${error.message}</div>`;
+  }
+}
+document.getElementById("googleLoginBtn").addEventListener("click", startGoogleAuth);
+document.getElementById("googleSignupBtn").addEventListener("click", startGoogleAuth);
 
 document.getElementById("signOutBtn").addEventListener("click", async () => {
   await dlbSignOut();
