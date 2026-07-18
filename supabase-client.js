@@ -106,7 +106,7 @@ async function dlbStartCheckout(plan) {
   if (!DLB_CONFIGURED) return { error: { message: "Checkout isn't set up yet." } };
   const session = await dlbGetSession();
   if (!session) {
-    window.location.href = "account.html?next=" + encodeURIComponent(plan);
+    window.location.href = "/account/?next=" + encodeURIComponent(plan);
     return { error: null };
   }
   try {
