@@ -171,6 +171,16 @@
     .human-btn{left:16px;bottom:16px;padding:12px 16px;font-size:13px}
     .human-overlay{padding:16px;align-items:flex-end;justify-content:center}
   }
+  .preview-form{max-width:420px;margin:0 auto 14px;display:flex;gap:8px}
+  .preview-form input{flex:1;border:1.5px solid var(--border);border-radius:9px;padding:12px 14px;font-size:14px;font-family:inherit}
+  .preview-form button{border:none;border-radius:9px;padding:12px 18px;font-weight:700;font-size:14px;font-family:inherit;background:var(--blue);color:#fff;cursor:pointer}
+  .preview-note{font-size:12.5px;color:var(--muted);margin-bottom:26px}
+  .preview-overlay{position:fixed;inset:0;background:rgba(15,39,64,.55);z-index:299;display:none;align-items:center;justify-content:center;padding:24px}
+  .preview-overlay.open{display:flex}
+  .preview-modal{position:relative;background:#fff;border-radius:16px;width:100%;max-width:720px;box-shadow:0 24px 60px rgba(15,39,64,.35);overflow:hidden;padding:16px}
+  .preview-modal img{display:block;width:100%;border-radius:10px;min-height:200px;background:#f0f3f7}
+  .preview-modal p{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .preview-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer}
 
   @media(max-width:700px){
     .hero h1{font-size:34px}
@@ -377,11 +387,14 @@
 <section id="contact" class="contact">
   <div class="wrap">
     <h2>Get a free preview for your business</h2>
-    <p>Send your website and I'll build a working assistant trained on your actual content — free, no commitment. If you like it, we talk price. If not, no hard feelings.</p>
-    <a class="btn btn-primary" href="mailto:shinhuei@desertleadbots.com?subject=Free%20AI%20Assistant%20Preview">Email shinhuei@desertleadbots.com</a>
-  </div>
+        <p>Enter your website below to see a live look at your site with an AI assistant running on it.</p>
+    <form class="preview-form" id="previewForm">
+      <input type="text" id="previewUrl" placeholder="yourbusiness.com" autocomplete="off">
+      <button type="submit">Preview my site</button>
+    </form>
+        <p class="preview-note">Or skip straight to a real, custom-built assistant — <a href="mailto:shinhuei@desertleadbots.com?subject=Free%20AI%20Assistant%20Preview">email shinhuei@desertleadbots.com</a>.</p>
+      </div>
 </section>
-
 <footer>
   © 2026 Shin-Huei. Built for home service businesses across the Phoenix Valley.
 </footer>
@@ -450,6 +463,33 @@
   });
 })();
 </script>
+  <div class="preview-overlay" id="previewOverlay">
+      <div class="preview-modal">
+            <button class="preview-close" id="previewClose" type="button">&times;</button>
+            <img id="previewImg" alt="Preview of your website">
+            <p>That chat bubble in the corner is a real, working AI assistant -- try it.</p>
+      </div>
+  </div>
+  <script>
+    (function(){
+        const form = document.getElementById("previewForm");
+        const input = document.getElementById("previewUrl");
+        const overlay = document.getElementById("previewOverlay");
+        const closeBtn = document.getElementById("previewClose");
+        const imgEl = document.getElementById("previewImg");
+        if (!form) return;
+            form.addEventListener("submit", function(e){
+                  e.preventDefault();
+                  let v = input.value.trim();
+                  if (!v) return;
+                        if (!/^https?:\/\//i.test(v)) v = "https://" + v;
+                              imgEl.src = "https://s.wordpress.com/mshots/v1/" + encodeURIComponent(v) + "?w=1200&h=800";
+                  overlay.classList.add("open");
+            });
+        closeBtn.addEventListener("click", function(){ overlay.classList.remove("open"); });
+        overlay.addEventListener("click", function(e){ if (e.target === overlay) overlay.classList.remove("open"); });
+    })();
+  </script>
 
 <!-- Live Chatbase agent embed — this is a real practice bot (Desert Peak Plumbing FAQ),
      shown here as proof of working technology. Swap the embed for a client's own agent ID
