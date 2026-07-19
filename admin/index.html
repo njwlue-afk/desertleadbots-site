@@ -245,6 +245,7 @@ let visitorMessages = [];
 let visitorChannel = null;
 let allVisits = [];
 let guestSearchTerm = "";
+let allOrders = [];
 
 function initials(str) {
   if (!str) return "?";
@@ -298,6 +299,7 @@ async function loadDashboard() {
   allProfiles = await dlbGetAllProfiles();
   allVisits = await dlbGetVisits(200);
   visitorMessages = await dlbGetVisitorMessages(200);
+  allOrders = await dlbGetAllOrders();
 
   document.getElementById("statUsers").textContent = allProfiles.length;
   document.getElementById("statVisits").textContent = allVisits.length;
@@ -308,6 +310,7 @@ async function loadDashboard() {
   renderUserRows();
   renderVisitorRows();
   renderGuestRows();
+  renderOrderRows();
 
   if (!chatChannel) {
     chatChannel = dlbSubscribeToAllMessages((m) => {
@@ -327,6 +330,28 @@ async function loadDashboard() {
 function updatePendingStat() {
   const pending = visitorMessages.filter((v) => !v.resolved).length;
   document.getElementById("statPending").textContent = pending;
+}
+
+function renderOrderRows() {
+  const tbody = document.getElementById("orderRows");
+  if (!allOrders.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">No orders yet.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = "";
+  allOrders.forEach((o) => {
+    const profile = allProfiles.find((p) => p.id === o.customer_id);
+    const who = profile ? (profile.full_name || profile.email) : (o.customer_id || "Unknown");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><div class="name">${who}</div></td>
+      <td class="sub">${o.description || "-"}</td>
+      <td class="sub">$${((o.amount_cents || 0) / 100).toFixed(2)}</td>
+      <td class="sub">${o.status || "-"}</td>
+      <td class="sub">${o.created_at ? new Date(o.created_at).toLocaleString() : "-"}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
 function renderVisitorRows() {
