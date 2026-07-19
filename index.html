@@ -181,6 +181,7 @@
   .preview-modal img{display:block;width:100%;border-radius:10px;min-height:200px;background:#f0f3f7}
   .preview-modal p{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
   .preview-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer}
+  body.preview-open #chatbase-bubble-button{transform:scale(1.6);transform-origin:bottom right;transition:transform .2s}
 
   @media(max-width:700px){
     .hero h1{font-size:34px}
@@ -485,9 +486,10 @@
                         if (!/^https?:\/\//i.test(v)) v = "https://" + v;
                               imgEl.src = "https://s.wordpress.com/mshots/v1/" + encodeURIComponent(v) + "?w=1200&h=800";
                   overlay.classList.add("open");
+        document.body.classList.add("preview-open");
             });
-        closeBtn.addEventListener("click", function(){ overlay.classList.remove("open"); });
-        overlay.addEventListener("click", function(e){ if (e.target === overlay) overlay.classList.remove("open"); });
+              closeBtn.addEventListener("click", function(){ overlay.classList.remove("open"); document.body.classList.remove("preview-open"); });
+              overlay.addEventListener("click", function(e){ if (e.target === overlay){ overlay.classList.remove("open"); document.body.classList.remove("preview-open"); } });
     })();
   </script>
 
