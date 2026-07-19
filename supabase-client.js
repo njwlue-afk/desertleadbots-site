@@ -159,6 +159,20 @@ async function dlbGetMyOrders() {
   return data;
 }
 
+async function dlbGetAllOrders() {
+    if (!DLB_CONFIGURED) return [];
+    const { data, error } = await sb
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) {
+          console.error("dlbGetAllOrders error", error);
+          return [];
+    }
+    return data;
+}
+
 // ---- Chat ---------------------------------------------------------------
 async function dlbGetMessages(customerId) {
   if (!DLB_CONFIGURED) return [];
